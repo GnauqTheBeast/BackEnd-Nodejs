@@ -1,0 +1,14 @@
+extends ../../layouts/default
+include ../../mixins/boxhead
+
+block main 
+    +boxhead(titlePage)
+    p #{message}
+    .container-md
+      .row
+        .col-md-4
+          | Column
+        .col-md-4
+          | Column
+        .col-md-4
+          | Column

@@ -1,0 +1,159 @@
+* { 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-family: 'Rubik', sans-serif;
+}
+
+.dashboard {
+    height: 100vh;
+    border-radius: 4px;
+    width: 100%;
+    max-height: 100%;
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    background-color: #151e2f;
+}
+
+.sidebar-head {
+    margin-bottom: 50px;
+    margin-top: 5px;
+}
+
+.sidebar-head-text {
+    font-size: 22px;
+    font-weight: 600;
+    padding-left: 20px;
+}
+
+.sidebar-list-item {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+
+.sidebar-body-child {
+    padding: 10px 0 10px 20px;
+    width: 100%;
+}
+
+.sidebar-body-child:hover { 
+    cursor: pointer;
+    background-color: #1d283c;
+    opacity: 0.8;
+}
+
+.sidebar-body-child.active {
+    background-color: #1d283c;
+    position: relative;
+}
+
+.sidebar-body-child.active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #9EC8B9;
+    height: 100%;
+    width: 4px;
+}
+
+i {
+    margin-right: 5px;
+}
+
+.app-content {
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    color: #fff;
+    background-color: #101827;
+    padding: 5px 10px;
+}
+
+.app-content-header {
+    padding: 0 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.headerText {
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.dark-mode-toggle {
+    color: #fff;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.bi.bi-moon-fill {
+    font-size: 24px;
+}
+
+.app-content-action {
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-bar {
+    outline: none;
+    color: #fff;
+    background-color: #1d283c;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #151e2f;
+    padding-left: 5px;
+}
+
+.search-bar:focus {
+    border-color: #9EC8B9;
+}
+
+.search-bar:hover {
+    border-color: #9EC8B9;
+}
+
+.app-content-action button {
+    color: #fff;
+    border: none;
+    background-color: #1d283c;
+    border: 1px solid #151e2f;
+    padding: 0 4px;
+    border-radius: 0 4px 4px 0;
+}
+
+.app-content-action button .bi.bi-search {
+    margin: 0;
+}
+
+.filterBtn {
+    padding: 5px 8px;
+    cursor: pointer;
+    background-color: #1d283c;
+    border-radius: 4px;
+    position: relative;
+}
+
+.bi.bi-funnel-fill {
+    margin-left: 5px;
+}
+
+.app-content-table {
+    margin-top: 20px;
+}
