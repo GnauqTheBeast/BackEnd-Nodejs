@@ -6,6 +6,18 @@ const pug = require("pug");
 const routeAdmin = require('./routes/admin/index');
 const route = require("./routes/client/index");
 const ConnectDb = require('./config/db/index');
+const systemConfig = require('./config/system');
+const methodOverride = require('method-override');
+const bodyParser = require('body-parser');
+
+// Using Body Parser
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Using Method Override 
+app.use(methodOverride('_method'));
+
+// Local Variables
+app.locals.prefixAdmin = systemConfig.prefixAdmin;
 
 // Connect to Db 
 ConnectDb();

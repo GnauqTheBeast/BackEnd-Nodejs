@@ -5,7 +5,8 @@ const ProductController = {
   mycar: (req, res, next) => {
     Product.find({})
       .then(data => res.render('client/pages/products/index', 
-      { titlePage: "Product list:",
+      { 
+        titlePage: "Product list:",
         data 
       }))
       .catch(next)
