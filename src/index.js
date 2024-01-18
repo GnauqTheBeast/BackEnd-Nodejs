@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const path = require('path');
-const port = 3000;
 const pug = require("pug");
 const routeAdmin = require('./routes/admin/index');
 const route = require("./routes/client/index");
@@ -12,6 +11,7 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+require('dotenv').config();
 
 // Using Flash (Showing alert)
 app.use(cookieParser('keyboard cat'));
@@ -41,6 +41,6 @@ app.use(express.static(path.join(__dirname, '/public')));
 routeAdmin(app);
 route(app);
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`App listening on port ${process.env.PORT}`);
 });
