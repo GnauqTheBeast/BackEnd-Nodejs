@@ -9,6 +9,14 @@ const ConnectDb = require('./config/db/index');
 const systemConfig = require('./config/system');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const flash = require('express-flash');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+
+// Using Flash (Showing alert)
+app.use(cookieParser('keyboard cat'));
+app.use(session({ cookie: { maxAge: 60000 }}));
+app.use(flash());
 
 // Using Body Parser
 app.use(bodyParser.urlencoded({ extended: false }));

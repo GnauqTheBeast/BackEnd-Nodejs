@@ -1,0 +1,46 @@
+extend ../../layouts/default
+include ../../mixins/alert
+
+block main
+    +alert-error(3000)
+    .app-content
+        .app-content-header
+            .h3 Create New Product
+        .app-content-action
+        .app-content-table
+            form(action=`${prefixAdmin}/product/create` method="POST" enctype="multipart/form-data") 
+                .mb-3
+                    label.form-label Title
+                    input.form-control(type='text', placeholder='Ex: Iphone X' name='title')
+                .mb-3
+                    label.form-label Description
+                    textarea.form-control(rows='3' name='description' value='')
+                .mb-3
+                    label.form-label Price
+                    .input-group
+                        span.input-group-text $
+                        input.form-control(type='number' name='price' value='0' min='0')
+                        span.input-group-text .00
+                .mb-3(upload-image)
+                    label.form-label Thumbnail
+                    .input-group
+                        input#inputImage.form-control(type='file' name="thumbnail" aria-describedby='basic-addon3 basic-addon4' accept="image/*")
+                    img(src="#", alt="", id="imagePreview")
+                .mb-3
+                    label.form-label Position
+                    input.form-control(type='number' name='position' placeholder='Auto increase')
+                .mb-3 
+                    label.form-label Status
+                    .check-box
+                        .form-check.form-check-inline
+                            input#flexRadioDefault1.form-check-input(type='radio', name='status' value='active' checked='')
+                            label.form-check-label(for='flexRadioDefault1')
+                                | Active
+                        .form-check.form-check-inline
+                            input#flexRadioDefault2.form-check-input(type='radio', name='status' value='inactive')
+                            label.form-check-label(for='flexRadioDefault2')
+                                | Inactive
+                button(type="submit" class="btn btn-primary") Create
+    script(src="/admin/script/createProduct.js") 
+                
+                

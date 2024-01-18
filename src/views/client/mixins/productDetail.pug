@@ -1,0 +1,15 @@
+mixin productDetail(product)
+    .detail-product
+            .img-product
+                img(src=product.thumbnail, alt="", id="imagePreview")
+            .info-product
+                .product-title #{product.title}
+                .product-price $#{product.price}
+                .product-description #{product.description}
+                .product-button 
+                    button(class="btn btn-dark") 
+                        i.bi.bi-bag
+                        | Buy Now
+                    button(class="btn btn-secondary")
+                        i.bi.bi-cart-plus
+                        | Add to cart 

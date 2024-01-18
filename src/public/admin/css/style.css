@@ -43,6 +43,8 @@ body {
 }
 
 .sidebar-body-child {
+    text-decoration: none;
+    color: #fff;
     padding: 10px 0 10px 20px;
     width: 100%;
 }
@@ -168,4 +170,62 @@ i {
 
 #selectBox {
     width: 250px;
+}
+
+.message {
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    z-index: 9999;
+    transition: all linear 0.3s;
+    animation: slideFromLeftSide ease 1s, fadeOut linear 1s 3s forwards;
+}
+
+.alert i {
+    margin-left: 5px;
+    color: #adb5bd;
+}
+
+@keyframes slideFromLeftSide {
+    from {
+      opacity: 0;
+      transform: translateX(calc(100% + 32px));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+}
+  
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+#imagePreview[src="#"] {
+    display: none;
+}
+
+#imagePreview {
+    max-width: 200px;
+    height: auto;
+    padding: 5px 5px;
+    margin: 5px 10px;
+    border: 1px solid #fff;
+    border-radius: 10px;
+}
+
+.detail-content {
+    padding: 20px 20px;
+    background-color: #151e2f;
+    border-radius: 10px;
+    box-shadow: 5px 10px 10px rgba(255, 255, 255, 0.05);
+}
+
+.trash-link {
+    text-decoration: none;
+    color: #fff;
+    margin-left: auto;
+    font-size: 16px;
 }

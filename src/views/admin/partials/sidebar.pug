@@ -3,18 +3,18 @@
         .sidebar-head-text Admin
     .sidebar-body 
         .sidebar-list-item
-            .sidebar-body-child(btn-page='dashboard')
+            a.sidebar-body-child(href=`${prefixAdmin}/dashboard` btn-page='dashboard')
                 i.bi.bi-house-fill
                 |Dashboard 
-            .sidebar-body-child(btn-page='product')
+            a.sidebar-body-child(href=`${prefixAdmin}/product` btn-page='product')
                 i.bi.bi-bag-fill
                 |Product 
-            .sidebar-body-child(btn-page='statistic')
+            a.sidebar-body-child(href=`${prefixAdmin}/statistic` btn-page='statistic')
                 i.bi.bi-pie-chart-fill 
                 |Statistic 
-            .sidebar-body-child(btn-page='inbox')
+            a.sidebar-body-child(href=`${prefixAdmin}/inbox` btn-page='inbox')
                 i.bi.bi-inbox-fill 
                 |Inbox 
-            .sidebar-body-child(btn-page='notification')
+            a.sidebar-body-child(href=`${prefixAdmin}/notification` btn-page='notification')
                 i.bi.bi-bell-fill
                 |Notifications  

@@ -1,19 +1,19 @@
 // Sidebar
-const btnPage = document.querySelectorAll('[btn-page]');
-if(btnPage) {
-    let url = new URL(window.location.href);
-    let new_url;
-    const currentPage = url.toString().split('/').pop();
-    btnPage.forEach(btn => {
-        if (currentPage === btn.getAttribute('btn-page'))
-            btn.classList.add('active');
-        btn.onclick = () => {
-            const pageName = btn.getAttribute('btn-page');
-            new_url = url.pathname.replace(currentPage, pageName);
-            window.location = new_url;
-        }
-    });
-}
+// const btnPage = document.querySelectorAll('[btn-page]');
+// if(btnPage) {
+//     let url = new URL(window.location.href);
+//     let new_url;
+//     const currentPage = url.toString().split('/').pop();
+//     btnPage.forEach(btn => {
+//         if (currentPage === btn.getAttribute('btn-page'))
+//             btn.classList.add('active');
+//         btn.onclick = () => {
+//             const pageName = btn.getAttribute('btn-page');
+//             new_url = url.pathname.replace(currentPage, pageName);
+//             window.location = new_url;
+//         }
+//     });
+// }
 // Filter Product 
 const btnFilter = document.querySelectorAll('[btn-status]');
 if(btnFilter) {
@@ -45,18 +45,18 @@ if(formSearch) {
         window.location = url;
     }
 }
-
 // Pagination
 const pageNumbers = document.querySelectorAll('[page-number]');
 const previousPage = document.querySelector('.previous-page');
 const nextPage = document.querySelector('.next-page');
 if(pageNumbers && previousPage && nextPage) {
     let url = new URL(window.location.href);
-    const currentPage = parseInt(url.searchParams.get('page'));
+    let currentPage = parseInt(url.searchParams.get('page'));
     // Previous Button
-    currentPage === 1 ? previousPage.classList.add('disable') : previousPage.classList.remove('disable');
+    (currentPage === 1 || !currentPage) ? previousPage.classList.add('disable') : previousPage.classList.remove('disable');
     previousPage.onclick = () => { 
-        if(currentPage != 1) {
+        // Check if currentPage != 1 and != isNaN
+        if(currentPage != 1 && !isNaN(currentPage)) {
             url.searchParams.set('page', currentPage - 1);
             window.location = url;
         }
@@ -64,6 +64,8 @@ if(pageNumbers && previousPage && nextPage) {
     // Next Button
     currentPage === pageNumbers.length ? nextPage.classList.add('disable') : nextPage.classList.remove('disable');
     nextPage.onclick = () => { 
+        if(isNaN(currentPage)) 
+            currentPage = 1;
         if(currentPage != pageNumbers.length) {
             url.searchParams.set('page', currentPage + 1);
             window.location = url;
@@ -78,3 +80,15 @@ if(pageNumbers && previousPage && nextPage) {
         }
     });
 }   
+// Hidden Showing Alert
+const exitBtnAlert = document.querySelector('.message i'); 
+const Alert = document.querySelector('.message');
+if(exitBtnAlert) {
+    exitBtnAlert.addEventListener('click', () => {
+        Alert.remove();
+    });
+    const timeDelay = Alert.getAttribute('time-delay');
+    setTimeout(() => {
+        if(Alert) Alert.remove();
+    }, timeDelay + 500)
+}

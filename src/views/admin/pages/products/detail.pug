@@ -1,0 +1,26 @@
+extend ../../layouts/default
+include ../../mixins/alert
+
+block main 
+    .app-content
+        .app-content-header
+            .h4 Product: #{product.title}
+        .app-content-action
+        .app-content-table
+            .detail-content
+                div(upload-image)
+                    img(src=product.thumbnail, alt="", id="imagePreview")
+                .my-3
+                    div Description: #{product.description}
+                .mb-3
+                    div Price: #{product.price}$
+                .mb-3
+                    div Position: #{product.position}
+                .mb-3 
+                    label.form-label Status: 
+                    - if (product.status === 'active')
+                        .badge.text-bg-success Active 
+                    - if (product.status === 'inactive')
+                        .badge.text-bg-danger Inactive 
+                a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product/edit/${product._id}`) Edit Product
+                

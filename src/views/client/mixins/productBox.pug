@@ -1,7 +1,9 @@
 mixin productBox(item)
     .product-box
-        img.productImg(src=item.thumbnail, alt=item.title)
+        a(href=`/product/${item.slug}`)
+            img.productImg(src=item.thumbnail, alt=item.title)
         .product-info
-            .productTitle #{item.title}
-            .productDescription #{item.description}
+            .productTitle 
+                a(href=`/product/${item.slug}`) #{item.title}
+            //- .productDescription #{item.description}
             .productPrice #{item.price}$

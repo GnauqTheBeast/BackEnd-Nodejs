@@ -1,3 +1,4 @@
+// Change Product Status
 const btnChangeStatus = document.querySelectorAll('[btn-change-status]');
 if(btnChangeStatus) {
     const formChangeStatus = document.querySelector('#form-change-status');
@@ -13,7 +14,6 @@ if(btnChangeStatus) {
         }
     });
 }
-
 // Select Multiple
 const deleteForm = document.forms["delete-product-form"];
 const deleteBtn = document.querySelector("#delete-btn");
@@ -32,7 +32,8 @@ if (deleteOneModal) {
         productId = button.getAttribute("data-bs-id");
     });
     deleteBtn.onclick = () => {
-        deleteForm.setAttribute("action", `/product/${productId}/delete?_method=DELETE`);
+        const path = deleteForm.getAttribute('data-path');
+        deleteForm.setAttribute("action", `${path}/${productId}?_method=PATCH`);
         deleteForm.submit();
     };
 }
@@ -60,3 +61,4 @@ selectBox.onchange = () => {
 confirmButton.onclick = () => { 
     selectedProductForm.submit();
 }
+
