@@ -29,10 +29,11 @@ const ProductController = {
       // Pagination
       let totalProduct = await Product.countDocuments( Find );
       const pagination = paginationHelper(totalProduct, req.query);
-      
+      const limitProduct = pagination.limit;
+      const indexStartProduct = pagination.indexStartProduct;
       // Deleted Product
       const deletedProduct = await Product.countDocuments({ deleted: true });
-      Product.find( Find ).sort({ position: "desc" }).limit(limitProduct).skip(indexStartProduct)
+      Product.find( Find ).limit(limitProduct).skip(indexStartProduct)
         .then(products => {
           res.render('./admin/pages/products/index',
             {

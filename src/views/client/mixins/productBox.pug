@@ -1,9 +1,8 @@
 mixin productBox(item)
-    .product-box
-        a(href=`/product/${item.slug}`)
-            img.productImg(src=item.thumbnail, alt=item.title)
-        .product-info
-            .productTitle 
-                a(href=`/product/${item.slug}`) #{item.title}
-            //- .productDescription #{item.description}
-            .productPrice #{item.price}$
+    .card(style='width: 18rem;')
+      img.card-img-top(src=item.thumbnail, alt=item.slug)
+      .card-body
+        h5.card-title #{item.title}
+        p.card-text
+          | #{item.description}
+        a.btn.btn-primary(href=`/product/${item.slug}`) Click here
