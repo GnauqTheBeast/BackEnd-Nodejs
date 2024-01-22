@@ -117,9 +117,6 @@ const ProductController = {
       if(isNaN(req.body.position)) {
         req.body.position = await Product.countDocuments() + 1;
       }
-      if(req.file) {
-        req.body.thumbnail = `/uploads/${req.file.filename}`;
-      }
       const product = new Product(req.body);
       await product.save();
       res.redirect('../product');
