@@ -14,8 +14,16 @@ block main
                 input.search-bar(type="text" name="keyword" placeholder="Search..." value=searchInfo.keyword)
                 button
                     i.bi.bi-search
-            .dropdown.filterBtn
+            .dropdown.sortBtn
                 div(class="dropdown-toggle", data-bs-toggle="dropdown", id="filter-dropdown", aria-expanded="false")
+                    |#{sortBtnTitle}
+                    i.bi.bi-filter-circle
+                ul.dropdown-menu.dropdown-menu-dark
+                    each sortBtn in sortBtns
+                        li 
+                            .dropdown-item(btn-sort=`${sortBtn.field}-${sortBtn.btn_sort}`) #{sortBtn.name}
+            .dropdown.filterBtn
+                div(class="dropdown-toggle", data-bs-toggle="dropdown", id="sort-dropdown", aria-expanded="false")
                     |#{filterBtn}
                     i.bi.bi-funnel-fill
                 ul.dropdown-menu.dropdown-menu-dark
@@ -48,7 +56,7 @@ block main
                                 .modal-body Are you sure ?
                                 .modal-footer
                                     button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                    button#confirmButton.btn.btn-primary(type='button') Save changes
+                                    button#confirmButton.btn.btn-primary(name='positionChange' value) Save changes
                     a(href=`${prefixAdmin}/product/trash` class='trash-link') #{deletedProduct} deleted products
                 table.table
                     thead

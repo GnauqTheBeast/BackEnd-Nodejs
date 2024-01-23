@@ -59,6 +59,16 @@ selectBox.onchange = () => {
 }
 // Select Method Submit
 confirmButton.onclick = () => { 
+    const inputIds = document.querySelectorAll("input[name='product']:checked");
+    const POS = [];
+    inputIds.forEach(inputId => {
+        const position = inputId
+            .closest('tr')
+            .querySelector("input[name='position']").value;
+        POS.push(position);
+    });
+    console.log(POS);
+    confirmButton.value = POS;
     selectedProductForm.submit();
 }
 

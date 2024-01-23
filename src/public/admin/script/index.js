@@ -22,8 +22,6 @@ if(btnFilter) {
         btn_status.onclick = () => {
             const status = btn_status.getAttribute('btn-status');
             status ? url.searchParams.set('status', status) : url.searchParams.delete('status');
-            url.searchParams.delete('keyword');
-            url.searchParams.delete('page');
             window.location = url;
         }
     });
@@ -91,4 +89,24 @@ if(exitBtnAlert) {
     setTimeout(() => {
         if(Alert) Alert.remove();
     }, timeDelay + 500)
+}
+// Sort Button
+const btnSort = document.querySelectorAll('[btn-sort]');
+if(btnSort) {
+    let url = new URL(window.location.href);
+    btnSort.forEach(btn_sort => { 
+        btn_sort.onclick = () => {
+            const btn_sort_attribute = btn_sort.getAttribute('btn-sort');
+            if(btn_sort_attribute==='-') {
+                url.searchParams.delete('sortKey');
+                url.searchParams.delete('sortValue');
+            }
+            else {
+                const [field, sortType] = btn_sort_attribute.split('-');
+                url.searchParams.set('sortKey', field);
+                url.searchParams.set('sortValue', sortType);
+            }
+            window.location = url;
+        }
+    });
 }

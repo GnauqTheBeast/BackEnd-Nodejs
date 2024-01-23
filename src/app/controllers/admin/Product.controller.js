@@ -2,6 +2,7 @@ const Product = require('../../model/products.model');
 const buttonFilter = require('../../helpers/filterStatus.helper');
 const searchHelper = require('../../helpers/search.helper');
 const paginationHelper = require('../../helpers/pagination.helper');
+const sort = require('../../helpers/sort.helper');
 const ProductController = {
     // [GET] /admin/product
     show: async (req, res) => {
@@ -31,9 +32,27 @@ const ProductController = {
       const pagination = paginationHelper(totalProduct, req.query);
       const limitProduct = pagination.limit;
       const indexStartProduct = pagination.indexStartProduct;
+
       // Deleted Product
       const deletedProduct = await Product.countDocuments({ deleted: true });
-      Product.find( Find ).limit(limitProduct).skip(indexStartProduct)
+      
+      // Sort 
+      let sortBtnTitle = 'Sort';
+      let sortBtns = sort;
+      let SORT = {};
+      if(req.query.sortKey && req.query.sortValue) {
+        SORT[req.query.sortKey] = req.query.sortValue; 
+        sortBtns.forEach(btn => {
+          if(req.query.sortKey === btn.field && req.query.sortValue === btn.btn_sort) 
+            sortBtnTitle = btn.name;
+        });
+      }
+      else {
+        SORT.position = 'desc';
+      }
+  
+      //
+      Product.find( Find ).limit(limitProduct).skip(indexStartProduct).sort(SORT)
         .then(products => {
           res.render('./admin/pages/products/index',
             {
@@ -43,9 +62,11 @@ const ProductController = {
               searchInfo,
               pagination,
               deletedProduct,
+              sort,
+              sortBtnTitle,
+              sortBtns,
             }
           )});
-        
     },
     // [PATCH] /admin/product/change-status/:status/:id
     changeStatus: async (req, res, next) => {
@@ -61,9 +82,11 @@ const ProductController = {
     },
     // [PATCH] /admin/product/handle-form-action
     handleFormAction: async (req, res, next) => {
+      const positionChange = req.body.positionChange.split(',');
+      const ID = req.body.product;
       switch(req.body.action) {
         case '1':
-          Product.updateMany({ _id: { $in: req.body.product }}, { status: 'active'})
+          Product.updateMany({ _id: { $in: ID }}, { status: 'active'})
             .then(() => 
               {
                 req.flash('success', 'Success! You have changed successfully');
@@ -72,23 +95,30 @@ const ProductController = {
             .catch(next);
           break;
         case '2':
-          Product.updateMany({_id: { $in: req.body.product }}, { status: 'inactive' })
-              .then(() => res.redirect('back'))
+          Product.updateMany({_id: { $in: ID }}, { status: 'inactive' })
+              .then(() => {
+                req.flash('success', 'Success! You have changed successfully');
+                res.redirect('back')}
+                )
               .catch(next);
           break;
         case '3':
-          Product.updateMany({_id: { $in: req.body.product }}, {
+          Product.updateMany({_id: { $in: ID }}, {
             deleted: true,
             deletedAt: new Date()
           })
-              .then(() => res.redirect('back'))
+              .then(() => {
+                req.flash('success', 'Success! You have changed successfully');
+                res.redirect('back')}
+                )
               .catch(next);
           break;
         case '4':
-          productId = req.body.product;
-          positions = req.body.position;
+          let productId = req.body.product; 
+          if(typeof productId === 'string')
+            productId = productId.split();
           for(let i = 0; i < productId.length; i++) {
-            await Product.updateOne( {_id: productId[i]}, {position: positions[i]} )
+            await Product.updateOne( {_id: productId[i]}, {position: positionChange[i]} );
           } 
           req.flash('success', 'Success! You have changed successfully');
           res.redirect('back');

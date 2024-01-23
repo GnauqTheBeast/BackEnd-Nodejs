@@ -155,6 +155,20 @@ i {
     margin-left: 5px;
 }
 
+.sortBtn {
+    margin-left: auto;
+    margin-right: 5px;
+    padding: 5px 8px;
+    cursor: pointer;
+    background-color: #1d283c;
+    border-radius: 4px;
+    position: relative;
+}
+
+.bi.bi-filter-circle {
+    margin-left: 5px;
+}
+
 .app-content-table {
     margin-top: 20px;
 }
