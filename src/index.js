@@ -13,6 +13,9 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 require('dotenv').config();
 
+// TinyMCE
+app.use('/tinymce', express.static(path.join(__dirname, '..', 'node_modules', 'tinymce')));
+
 // Using Flash (Showing alert)
 app.use(cookieParser('keyboard cat'));
 app.use(session({ cookie: { maxAge: 60000 }}));
