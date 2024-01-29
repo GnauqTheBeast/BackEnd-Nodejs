@@ -5,6 +5,10 @@ const { Schema } = mongoose;
 
 const Product = new Schema({ 
     title: String,
+    categoryId: {
+        type: String, 
+        default: ''
+    },
     description: String,
     price: Number,
     thumbnail: String,

@@ -1,14 +1,14 @@
 let buttonFilters = [
     {
-        name: "All Product",
+        name: "All",
         btn_status: "",
     }, 
     {
-        name: "Active Product",
+        name: "Active",
         btn_status: "active",
     }, 
     {
-        name: "Inactive Product",
+        name: "Inactive",
         btn_status: "inactive",
     }
 ];

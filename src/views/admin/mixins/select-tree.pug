@@ -1,0 +1,28 @@
+mixin selectTree(items, productCategoryId='', level=1)
+    each item in items 
+        - const prefix = Array(level + 1).join('--');
+        option(
+            value=item.id
+            selected=(productCategoryId === item.id) ? true : false
+            ) #{prefix} #{item.title}
+        if item.children && item.children.length > 0
+            +selectTree(item.children, productCategoryId, level + 1) 
+
+mixin selectedTree(items, parentId='', id, level=1)
+    each item in items 
+        - const prefix = Array(level + 1).join('--');
+        option(
+            value=item.id 
+            selected=(parentId === item.id) ? true : false
+            disabled=(item.id === id) ? true : false
+            ) #{prefix} #{item.title}
+        if item.children && item.children.length > 0
+            +selectedTree(item.children, parentId, id, level+1)
+
+mixin hierachyName(items, id, parentId='', level=1)
+    each item in items 
+        - const prefix = Array(level).join('--');
+        if (item.parentId === parentId && item.id === id) 
+            div #{prefix} #{item.title}
+        else if item.children && item.children.length > 0
+            +hierachyName(item.children, id, item.id, level+1)

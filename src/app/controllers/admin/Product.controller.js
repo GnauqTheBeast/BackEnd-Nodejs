@@ -1,8 +1,11 @@
 const Product = require('../../model/products.model');
+const ProductCategory = require('../../model/productsCategory.model');
 const buttonFilter = require('../../helpers/filterStatus.helper');
 const searchHelper = require('../../helpers/search.helper');
 const paginationHelper = require('../../helpers/pagination.helper');
-const sort = require('../../helpers/sort.helper');
+const sortHelper = require('../../helpers/sort.helper');
+const hierarchyCategoryHelper = require('../../helpers/hierarchyCategory.helper');
+
 const ProductController = {
     // [GET] /admin/product
     show: async (req, res) => {
@@ -30,15 +33,13 @@ const ProductController = {
       // Pagination
       let totalProduct = await Product.countDocuments( Find );
       const pagination = paginationHelper(totalProduct, req.query);
-      const limitProduct = pagination.limit;
-      const indexStartProduct = pagination.indexStartProduct;
 
       // Deleted Product
       const deletedProduct = await Product.countDocuments({ deleted: true });
       
       // Sort 
       let sortBtnTitle = 'Sort';
-      let sortBtns = sort;
+      let sortBtns = sortHelper;
       let SORT = {};
       if(req.query.sortKey && req.query.sortValue) {
         SORT[req.query.sortKey] = req.query.sortValue; 
@@ -52,7 +53,7 @@ const ProductController = {
       }
   
       //
-      Product.find( Find ).limit(limitProduct).skip(indexStartProduct).sort(SORT)
+      Product.find( Find ).limit(pagination.limit).skip(pagination.indexStart).sort(SORT)
         .then(products => {
           res.render('./admin/pages/products/index',
             {
@@ -62,7 +63,7 @@ const ProductController = {
               searchInfo,
               pagination,
               deletedProduct,
-              sort,
+              sortHelper,
               sortBtnTitle,
               sortBtns,
             }
@@ -152,14 +153,17 @@ const ProductController = {
       res.redirect('../product');
     },
     // [GET] /edit/:id
-    edit: async (req, res, next) => {
+    edit: async (req, res) => {
       const find = {
         deleted: false,
         _id: req.params.id,
       }
+      const allProductCategories = await ProductCategory.find({deleted: false}); 
+      const records = hierarchyCategoryHelper(allProductCategories);
       Product.findOne(find)
         .then((product) => res.render('./admin/pages/products/edit', {
-          product
+          product,
+          records
         }))
         .catch(() => {
           req.flash('error', 'ERORR! You cannot edit unexist product');
@@ -183,9 +187,13 @@ const ProductController = {
         })
     },
     // [GET] /detail/:id
-    detail: (req, res, next) => {
+    detail: async (req, res) => {
+      const Categories = await ProductCategory.find({deleted: false});
       Product.findById({ _id: req.params.id })
-        .then(product => res.render('./admin/pages/products/detail', { product }));
+        .then(product => res.render('./admin/pages/products/detail', { 
+            product,
+            Categories
+        }));
     },
     // [GET] /trash
     trash: (req, res) => {

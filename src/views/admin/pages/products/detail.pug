@@ -1,5 +1,6 @@
 extend ../../layouts/default
 include ../../mixins/alert
+include ../../mixins/mapping-category-name
 
 block main 
     .app-content
@@ -8,10 +9,15 @@ block main
         .app-content-action
         .app-content-table
             .detail-content
-                div(upload-image)
+                .my-3(upload-image)
                     img(src=product.thumbnail, alt="", id="imagePreview")
                 .my-3
-                    div Description: #{product.description}
+                    div 
+                    | Category: 
+                    +map(product.categoryId, Categories)
+                .my-3
+                    div 
+                    | Description: !{product.description}
                 .mb-3
                     div Price: #{product.price}$
                 .mb-3
@@ -22,5 +28,4 @@ block main
                         .badge.text-bg-success Active 
                     - if (product.status === 'inactive')
                         .badge.text-bg-danger Inactive 
-                a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product/edit/${product._id}`) Edit Product
-                
+                a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product/edit/${product._id}`) Edit Product  

@@ -1,3 +1,19 @@
+// Delete Product Category
+const deleteForm = document.querySelector('#delete-form');
+const modal = document.querySelector('#deleteOneModal');
+const deleteBtn = document.querySelector('#delete-btn');
+let categoryId;
+if(deleteForm && modal) {
+    modal.addEventListener('show.bs.modal', e => {
+        const button = e.relatedTarget;
+        categoryId = button.getAttribute('data-bs-id');
+    });
+    deleteBtn.onclick = () => {
+        const path = deleteForm.getAttribute('data-path');
+        deleteForm.action = `${path}/${categoryId}?_method=DELETE`;
+        deleteForm.submit();
+    }
+}
 // Change Product Status
 const btnChangeStatus = document.querySelectorAll('[btn-change-status]');
 if(btnChangeStatus) {
@@ -6,41 +22,25 @@ if(btnChangeStatus) {
     btnChangeStatus.forEach(btn => {
         btn.onclick = () => {
             const currentStatus = btn.getAttribute('badge-status');
-            const productId = btn.getAttribute('data-id');
+            const categoryId = btn.getAttribute('data-id');
             let statusChange = currentStatus === 'active' ? 'inactive' : 'active';
-            const action = `${path}/${statusChange}/${productId}?_method=PATCH`;
+            const action = `${path}/${statusChange}/${categoryId}?_method=PATCH`;
             formChangeStatus.setAttribute('action', action);
             formChangeStatus.submit();          
         }
     });
 }
-// Select Multiple
-const deleteForm = document.forms["delete-product-form"];
-const deleteBtn = document.querySelector("#delete-btn");
-const deleteOneModal = document.getElementById("deleteOneModal");
+//
 const selectAllCheck = document.querySelector("#checkBoxAll");
-const allOfProductCheckBox = Array.from(document.querySelectorAll('#productCheckBox'));
+const allOfProductCheckBox = Array.from(document.querySelectorAll('#categoryCheckBox'));
 const selectBox = document.querySelector('#selectBox');
 const btnSelectBox = document.querySelector('#btnSelectBox');
 const confirmButton = document.querySelector('#confirmButton');
-const selectedProductForm = document.querySelector('[name="selected-product-form"]');
-var productId;
-// Delete one
-if (deleteOneModal) {
-    deleteOneModal.addEventListener("show.bs.modal", (event) => {
-        const button = event.relatedTarget;
-        productId = button.getAttribute("data-bs-id");
-    });
-    deleteBtn.onclick = () => {
-        const path = deleteForm.getAttribute('data-path');
-        deleteForm.setAttribute("action", `${path}/${productId}?_method=PATCH`);
-        deleteForm.submit();
-    };
-}
-// Check All 
+const selectedCategoryForm = document.querySelector('#selected-category-form');
+
 var curNumberOfChecks;
 function BtnCheck() { 
-    curNumberOfChecks = document.querySelectorAll('input[id="productCheckBox"]:checked').length;
+    curNumberOfChecks = document.querySelectorAll('input[id="categoryCheckBox"]:checked').length;
     selectBox.value > 0 && curNumberOfChecks > 0 ? btnSelectBox.disabled = false : btnSelectBox.disabled = true;
 }
 selectAllCheck.onclick = () => {
@@ -49,7 +49,7 @@ selectAllCheck.onclick = () => {
 }
 allOfProductCheckBox.forEach(checkBox => {
     checkBox.onclick = () => {
-        curNumberOfChecks = document.querySelectorAll('input[id="productCheckBox"]:checked').length;
+        curNumberOfChecks = document.querySelectorAll('input[id="categoryCheckBox"]:checked').length;
         curNumberOfChecks === allOfProductCheckBox.length ? selectAllCheck.checked=true : selectAllCheck.checked=false;
         BtnCheck();
     }
@@ -59,7 +59,7 @@ selectBox.onchange = () => {
 }
 // Select Method Submit
 confirmButton.onclick = () => { 
-    const inputIds = document.querySelectorAll("input[name='product']:checked");
+    const inputIds = document.querySelectorAll("input[name='category']:checked");
     const POS = [];
     inputIds.forEach(inputId => {
         const position = inputId
@@ -67,7 +67,7 @@ confirmButton.onclick = () => {
             .querySelector("input[name='position']").value;
         POS.push(position);
     });
+    console.log(POS);
     confirmButton.value = POS;
-    selectedProductForm.submit();
+    selectedCategoryForm.submit();
 }
-

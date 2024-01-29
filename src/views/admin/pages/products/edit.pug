@@ -1,5 +1,6 @@
 extend ../../layouts/default
 include ../../mixins/alert
+include ../../mixins/select-tree
 
 block main
     +alert-error(3000)
@@ -12,6 +13,16 @@ block main
                 .mb-3
                     label.form-label Title
                     input.form-control(type='text', placeholder='Ex: Iphone X' name='title' value=product.title)
+                .mb-3
+                    label.form-label(for='categoryId') Category
+                    select(
+                        name="categoryId"
+                        id="categoryId"
+                        class="form-select"
+                    ) 
+                        option(value='') -- Select Category --
+                        if(records) 
+                            +selectTree(records, product.categoryId)
                 .mb-3
                     label.form-label Description
                     textarea.form-control(rows='3' name='description') #{product.description}
@@ -51,6 +62,8 @@ block main
                             label.form-check-label(for='flexRadioDefault2')
                                 | Inactive
                 button(type="submit" class="btn btn-primary") Update Changes
-    script(src="/admin/script/createProduct.js") 
+    script(src="/admin/script/createProduct.js")
+    script(src="/tinymce/tinymce.min.js") 
+    script(src="/admin/script/tinymce-config.js") 
                 
                 

@@ -1,5 +1,6 @@
 extend ../../layouts/default
 include ../../mixins/alert
+include ../../mixins/select-tree
 
 block main 
     .app-content 
@@ -66,7 +67,7 @@ block main
                             th(scope='col') Name 
                             th(scope='col') Description
                             th(scope='col') Status
-                            th(scope='col') Order
+                            th(scope='col') Position
                             th(scope='col') 
                             th(scope='col') 
                             th(scope='col') 
@@ -74,7 +75,7 @@ block main
                         each productCategory, index in productCategories
                             tr
                                 td 
-                                    input(class="form-check-input" type="checkbox" value=productCategory.id name="productCategory" id="productCategoryCheckBox")
+                                    input(class="form-check-input" type="checkbox" value=productCategory.id name="category" id="categoryCheckBox")
                                 th(scope='row') #{index + 1}
                                 td 
                                     img(src=productCategory.thumbnail
@@ -82,7 +83,8 @@ block main
                                         width="100px"
                                         height="auto"
                                     )
-                                td #{productCategory.title}
+                                td 
+                                    +hierachyName(records, productCategory.id)
                                 td !{productCategory.description}
                                 td  
                                     if (productCategory.status == "active")
@@ -113,17 +115,19 @@ block main
                                                 .modal-footer
                                                     button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
                                                     button.btn.btn-danger(type='button' data-bs-id=productCategory.id id='delete-btn') Delete
-        //- nav
-        //-     ul.pagination
-        //-         li.page-item
-        //-             .page-link.previous-page(aria-label='Previous')
-        //-                 span(aria-hidden='true') &laquo;
-        //-         - var page = 1
-        //-         while page <= pagination.totalPage
-        //-             li.page-item
-        //-                 div(class=`page-link ${page === pagination.currentPage ? 'active' : ''}` page-number=`${page}`) #{page++}
-        //-         li.page-item
-        //-             .page-link.next-page(aria-label='Next')
-        //-                 span(aria-hidden='true') &raquo;
-    script(src="./admin/script/product-category.js") 
-            
+        nav
+            ul.pagination
+                li.page-item
+                    .page-link.previous-page(aria-label='Previous')
+                        span(aria-hidden='true') &laquo;
+                - var page = 1
+                while page <= pagination.totalPage
+                    li.page-item
+                        div(class=`page-link ${page === pagination.currentPage ? 'active' : ''}` page-number=`${page}`) #{page++}
+                li.page-item
+                    .page-link.next-page(aria-label='Next')
+                        span(aria-hidden='true') &raquo;
+    form(action="", method="post", id='delete-form',data-path=`${prefixAdmin}/product-category/delete`) 
+    form(action="", method="post", id='form-change-status', data-path=`${prefixAdmin}/product-category/change-status`) 
+    form(action="", method="post", id='selected-category-form') 
+    script(src="/admin/script/product-category/product-category.js") 

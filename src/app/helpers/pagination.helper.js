@@ -8,6 +8,6 @@ module.exports = (totalProduct, query) => {
     if(query.page) {
         pagination.currentPage = parseInt(query.page);
     }
-    pagination.indexStartProduct = (pagination.currentPage - 1) * pagination.limit;
+    pagination.indexStart = (pagination.currentPage - 1) * pagination.limit;
     return pagination;
 }
