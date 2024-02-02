@@ -246,3 +246,17 @@ i {
     margin-left: auto;
     font-size: 16px;
 }
+
+.permission-link {
+    background-color: #1d283c;
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #fff;
+    margin-left: auto;
+    font-size: 16px;
+}
+
+.permission-link:hover {
+    opacity: 0.8;
+}

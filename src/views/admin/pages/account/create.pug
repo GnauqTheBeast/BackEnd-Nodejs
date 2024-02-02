@@ -1,0 +1,49 @@
+extend ../../layouts/default
+include ../../mixins/alert
+
+block main
+    +alert-error(3000)
+    .app-content
+        .app-content-header
+            .h3 Create Admin Account
+        .app-content-action
+        .app-content-table
+            form(action=`${prefixAdmin}/account/create` method="POST" enctype="multipart/form-data") 
+                .mb-3
+                    label.form-label Full Name
+                    input.form-control(
+                        type='text' 
+                        placeholder='Ex: Quang Nguyen'
+                        name='fullName'
+                        )
+                .mb-3
+                    label.form-label Email
+                    input.form-control(
+                        type='text' 
+                        placeholder='Ex: quangnguyenngoc314@gmail.com'
+                        name='email'
+                    )
+                .mb-3
+                    label.form-label Password
+                    input.form-control(
+                        type='password' 
+                        name='password'
+                    )
+                .mb-3
+                    label.form-label(for='role') Role 
+                    select(
+                        name="role_id"
+                        id="role_id"
+                        class="form-select"
+                    ) 
+                        option(value='') -- Select Role --
+                        each role in roles 
+                            option(value=role.id) #{role.title}
+                .mb-3(upload-image)
+                    label.form-label Avatar
+                    .input-group
+                        input#inputImage.form-control(type='file' name="avatar" aria-describedby='basic-addon3 basic-addon4' accept="image/*")
+                    img(src="#", alt="", id="imagePreview")
+                button(type="submit" class="btn btn-primary") Create
+    script(src="/admin/script/account/create-account.js") 
+                

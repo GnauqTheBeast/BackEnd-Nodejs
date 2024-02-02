@@ -1,0 +1,31 @@
+extend ../../layouts/default
+include ../../mixins/alert
+
+block main
+    +alert-error(3000)
+    .app-content
+        .app-content-header
+            .h3 Create Role
+        .app-content-action
+        .app-content-table
+            form(action=`${prefixAdmin}/role/create` method="POST") 
+                .mb-3
+                    label.form-label Title
+                    input.form-control(
+                        type='text' 
+                        placeholder='Ex: Administrator'
+                        name='title'
+                        )
+                .mb-3
+                    label.form-label Description
+                    textarea.form-control(
+                        rows='3' 
+                        name='description' 
+                        value=''
+                        )
+                button(type="submit" class="btn btn-primary") Create
+    script(src="/tinymce/tinymce.min.js") 
+    script(src="/admin/script/tinymce-config.js")
+    script(src="/admin/script/role/create-role.js") 
+                
+                

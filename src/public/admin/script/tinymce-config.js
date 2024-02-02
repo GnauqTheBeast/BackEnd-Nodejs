@@ -1,6 +1,6 @@
 tinymce.init({
     selector: 'textarea.form-control',
-    height: 500,
+    height: 300,
     plugins: 'image code',
     file_picker_types: 'image',
     file_picker_callback: function (cb, value, meta) {

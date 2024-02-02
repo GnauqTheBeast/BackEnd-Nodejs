@@ -138,11 +138,11 @@ const ProductController = {
         .then(() => res.redirect('back'))
     },
     // [GET] /create
-    create: (req, res, next) => {
+    create: (req, res) => {
       res.render('./admin/pages/products/create');
     },
     // [POST] /create
-    createProduct: async (req, res, next) => { 
+    createProduct: async (req, res) => { 
       req.body.price = parseInt(req.body.price);
       req.body.position = parseInt(req.body.position); 
       if(isNaN(req.body.position)) {
@@ -229,6 +229,6 @@ const ProductController = {
             res.redirect('back');
           });
     },
-  };
+};
   
 module.exports = ProductController;

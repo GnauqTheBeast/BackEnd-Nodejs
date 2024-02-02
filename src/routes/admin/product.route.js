@@ -5,7 +5,6 @@ const multer  = require('multer');
 const upload = multer();
 const validateProduct = require('../../validates/admin/product.validate');
 
-
 // Middlewares
 const fileUploadCloud = require('../../middlewares/admin/fileUploadCloud.middleware');
 //

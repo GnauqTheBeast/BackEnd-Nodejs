@@ -1,19 +1,3 @@
-// Sidebar
-// const btnPage = document.querySelectorAll('[btn-page]');
-// if(btnPage) {
-//     let url = new URL(window.location.href);
-//     let new_url;
-//     const currentPage = url.toString().split('/').pop();
-//     btnPage.forEach(btn => {
-//         if (currentPage === btn.getAttribute('btn-page'))
-//             btn.classList.add('active');
-//         btn.onclick = () => {
-//             const pageName = btn.getAttribute('btn-page');
-//             new_url = url.pathname.replace(currentPage, pageName);
-//             window.location = new_url;
-//         }
-//     });
-// }
 // Filter Product 
 const btnFilter = document.querySelectorAll('[btn-status]');
 if(btnFilter) {
