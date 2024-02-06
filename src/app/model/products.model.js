@@ -18,7 +18,20 @@ const Product = new Schema({
         type: Boolean,
         default: false
     },
-    deletedAt: Date,
+    createdBy: {
+        account_id: String,
+        createdAt: Date
+    },
+    deletedBy: {
+        account_id: String,
+        deletedAt: Date
+    },
+    updatedBy: [
+        {
+            account_id: String,
+            updatedAt: Date,
+        }
+    ],
     slug: {
         type: String, slug: 'title', unique: true
     }

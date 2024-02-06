@@ -1,106 +1,131 @@
 extend ../../layouts/default
 include ../../mixins/alert
 
-block main 
-    .app-content 
-        .app-content-header 
-            .app-content-text 
-                h1.headerText Permission  
-            .dark-mode-toggle
-                i.bi.bi-moon-fill
-        .app-content-action
-            if(roles)
-                div(type='submit' class="btn btn-success" btn-submit) Submit 
-            a.permission-link(href=`${prefixAdmin}/role`) 
-                i.bi.bi-people-fill 
-                |Role 
-        .app-content-table 
-            + alert-success(3000)
-            + alert-error(3000)
-            if(roles) 
-                .d-none(data-records=roles)
-            table.table
-                thead
-                    tr
-                    th(scope='col') Action
-                    each role in roles 
-                        th(scope='col' class='text-center' data-id=role.id) #{role.title}
-                tbody    
-                    tr 
-                        th(colspan='3') Product Category 
-                    tr(data-name='product-category-view') 
-                        td View 
+block main
+    if ! role.permissions.includes('role-permission-permit')
+        include ../../partials/strict 
+    else
+        .app-content 
+            .app-content-header 
+                .app-content-text 
+                    h1.headerText Permission  
+                .dark-mode-toggle
+                    i.bi.bi-moon-fill
+            .app-content-action
+                if(roles)
+                    div(type='submit' class="btn btn-success" btn-submit) Submit 
+                a.permission-link(href=`${prefixAdmin}/role`) 
+                    i.bi.bi-people-fill 
+                    |Role 
+            .app-content-table 
+                + alert-success(3000)
+                + alert-error(3000)
+                if(roles) 
+                    .d-none(data-records=roles)
+                table.table
+                    thead
+                        tr
+                        th(scope='col') Action
                         each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='product-category-create') 
-                        td Create  
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='product-category-edit') 
-                        td Edit 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='product-category-delete') 
-                        td Delete 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input') 
-                    tr 
-                        th(colspan='3') Product 
-                    tr(data-name='product-view') 
-                        td View 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='product-create') 
-                        td Create  
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='product-edit') 
-                        td Edit 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='product-delete') 
-                        td Delete 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr 
-                        th(colspan='3') Role Permission 
-                    tr(data-name='role-permission-view') 
-                        td View 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='role-permission-create') 
-                        td Create  
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='role-permission-edit') 
-                        td Edit 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input')
-                    tr(data-name='role-permission-delete') 
-                        td Delete 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input') 
-                    tr(data-name='role-permission-permit') 
-                        td Permit 
-                        each role in roles 
-                            td(class='text-center') 
-                                input(type='checkbox' class='form-check-input') 
-            form.d-none(action=`${prefixAdmin}/role/permission?_method=PATCH`, method="post")
-                input(
-                    type="text" 
-                    class='form-control' 
-                    name='permission' 
-                    )        
-    script(src="/admin/script/role/permission.js") 
+                            th(scope='col' class='text-center' data-id=role.id) #{role.title}
+                    tbody    
+                        tr 
+                            th(colspan='10') Product Category 
+                        tr(data-name='product-category-view') 
+                            td View 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='product-category-create') 
+                            td Create  
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='product-category-edit') 
+                            td Edit 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='product-category-delete') 
+                            td Delete 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input') 
+                        tr 
+                            th(colspan='10') Product 
+                        tr(data-name='product-view') 
+                            td View 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='product-create') 
+                            td Create  
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='product-edit') 
+                            td Edit 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='product-delete') 
+                            td Delete 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr 
+                            th(colspan='10') Account 
+                        tr(data-name='account-view') 
+                            td View 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='account-create') 
+                            td Create  
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='account-edit') 
+                            td Edit 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='account-delete') 
+                            td Delete 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr 
+                            th(colspan='10') Role Permission 
+                        tr(data-name='role-permission-view') 
+                            td View 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='role-permission-create') 
+                            td Create  
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='role-permission-edit') 
+                            td Edit 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input')
+                        tr(data-name='role-permission-delete') 
+                            td Delete 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input') 
+                        tr(data-name='role-permission-permit') 
+                            td Permit 
+                            each role in roles 
+                                td(class='text-center') 
+                                    input(type='checkbox' class='form-check-input') 
+                form.d-none(action=`${prefixAdmin}/role/permission?_method=PATCH`, method="post")
+                    input(
+                        type="text" 
+                        class='form-control' 
+                        name='permission' 
+                        )        
+        script(src="/admin/script/role/permission.js") 

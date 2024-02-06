@@ -2,24 +2,27 @@ extend ../../layouts/default
 include ../../mixins/alert
 
 block main 
-    .app-content
-        .app-content-header
-            .h4 Product Category: #{category.title}
-        .app-content-action
-        .app-content-table
-            .detail-content
-                div(upload-image)
-                    img(src=category.thumbnail, alt="", id="imagePreview")
-                .mb-3
-                    div ParentId: #{category.parentId}
-                .my-3
-                    div Description: !{category.description}
-                .mb-3
-                    div Position: #{category.position}
-                .mb-3 
-                    label.form-label Status: 
-                    - if (category.status === 'active')
-                        .badge.text-bg-success Active 
-                    - if (category.status === 'inactive')
-                        .badge.text-bg-danger Inactive 
-                a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product-category/edit/${category.id}`) Edit Product  
+    if ! role.permissions.includes('product-category-view')
+        include ../../partials/strict
+    else 
+        .app-content
+            .app-content-header
+                .h4 Product Category: #{category.title}
+            .app-content-action
+            .app-content-table
+                .detail-content
+                    div(upload-image)
+                        img(src=category.thumbnail, alt="", id="imagePreview")
+                    .mb-3
+                        div ParentId: #{category.parentId}
+                    .my-3
+                        div Description: !{category.description}
+                    .mb-3
+                        div Position: #{category.position}
+                    .mb-3 
+                        label.form-label Status: 
+                        - if (category.status === 'active')
+                            .badge.text-bg-success Active 
+                        - if (category.status === 'inactive')
+                            .badge.text-bg-danger Inactive 
+                    a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product-category/edit/${category.id}`) Edit Product  

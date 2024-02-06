@@ -1,131 +1,152 @@
 extend ../../layouts/default
 include ../../mixins/alert
+include ../../mixins/parseTime
 
-block main 
-    .app-content 
-        .app-content-header 
-            .app-content-text 
-                h1.headerText Products 
-            .dark-mode-toggle
-                i.bi.bi-moon-fill
-            a.btn.btn-success(href=`${prefixAdmin}/product/create`) Add Product 
-        .app-content-action 
-            form(id="form-search")
-                input.search-bar(type="text" name="keyword" placeholder="Search..." value=searchInfo.keyword)
-                button
-                    i.bi.bi-search
-            .dropdown.sortBtn
-                div(class="dropdown-toggle", data-bs-toggle="dropdown", id="filter-dropdown", aria-expanded="false")
-                    |#{sortBtnTitle}
-                    i.bi.bi-filter-circle
-                ul.dropdown-menu.dropdown-menu-dark
-                    each sortBtn in sortBtns
-                        li 
-                            .dropdown-item(btn-sort=`${sortBtn.field}-${sortBtn.btn_sort}`) #{sortBtn.name}
-            .dropdown.filterBtn
-                div(class="dropdown-toggle", data-bs-toggle="dropdown", id="sort-dropdown", aria-expanded="false")
-                    |#{filterBtn}
-                    i.bi.bi-funnel-fill
-                ul.dropdown-menu.dropdown-menu-dark
-                    each buttonFilter in buttonFilters
-                        li 
-                            .dropdown-item(btn-status=`${buttonFilter.btn_status}`) #{buttonFilter.name}
-        .app-content-table 
-            + alert-success(3000)
-            + alert-error(3000)
-            form(method="POST" name="selected-product-form" action="product/handle-form-action?_method=PATCH")
-                .my-3.d-flex.gap-2
-                    .form-check
-                        input#checkBoxAll.form-check-input(type='checkbox', value='')
-                        label.form-check-label(for='flexCheckDefault')
-                        | Select All
-                    select#selectBox.form-select.form-select-sm(name='action')
-                        option(value='0', selected='') Open this select menu
-                        option(value='1') Active
-                        option(value='2') Inactive
-                        option(value='3') Delete
-                        option(value='4') Change position
-                    button#btnSelectBox.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#multipleSelectModal', disabled='')
-                        | Submit
-                    .modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true', id='multipleSelectModal', data-bs-theme="dark")
-                        .modal-dialog
-                            .modal-content
-                                .modal-header
-                                    h1#multipleSelectModalLabel.modal-title.fs-5 Alert !!!
-                                    button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
-                                .modal-body Are you sure ?
-                                .modal-footer
-                                    button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                    button#confirmButton.btn.btn-primary(name='positionChange' value) Save changes
-                    a(href=`${prefixAdmin}/product/trash` class='trash-link') #{deletedProduct} deleted products
-                table.table
-                    thead
-                        tr  
-                            th(scope='col') 
-                            th(scope='col') #
-                            th(scope='col') Image
-                            th(scope='col') Name 
-                            th(scope='col') Description
-                            th(scope='col') Status
-                            th(scope='col') Position
-                            th(scope='col') 
-                            th(scope='col') 
-                            th(scope='col') 
-                    tbody
-                        each product, index in products
-                            tr
-                                td 
-                                    input(class="form-check-input" type="checkbox" value=product._id name="product" id="productCheckBox")
-                                th(scope='row') #{index + 1}
-                                td 
-                                    img(src=product.thumbnail
-                                        alt=product.title
-                                        width="100px"
-                                        height="auto"
-                                    )
-                                td #{product.title}
-                                td !{product.description}
-                                td  
-                                    if (product.status == "active")
-                                        span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-success Active 
-                                    else 
-                                        span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-danger Inactive 
-                                td 
-                                    input(
-                                        type="number"
-                                        value=product.position 
-                                        style="width: 50px"
-                                        min="1"
-                                        name="position"
-                                    )
-                                td 
-                                    a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product/detail/${product._id}`) Detail
-                                td 
-                                    a.btn.btn-warning.edit-btn(href=`${prefixAdmin}/product/edit/${product._id}`) Edit
-                                td
-                                    .btn.btn-danger(type='button', data-bs-toggle='modal', data-bs-target='#deleteOneModal', data-bs-id=product.id) Delete
-                                    .modal.fade(tabindex='-1', aria-labelledby='deleteOneModalLabel', aria-hidden='true', id="deleteOneModal", data-bs-theme="dark")
-                                        .modal-dialog
-                                            .modal-content
-                                                .modal-header
-                                                    h1#deleteOneModalLabel.modal-title.fs-5.text-light Alert
-                                                    button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
-                                                .modal-body.text-light You are soft deleting this product. You can restore it !
-                                                .modal-footer
-                                                    button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                                    button.btn.btn-danger(type='button' data-bs-id=product.id id='delete-btn') Delete
-        nav
-            ul.pagination
-                li.page-item
-                    .page-link.previous-page(aria-label='Previous')
-                        span(aria-hidden='true') &laquo;
-                - var page = 1
-                while page <= pagination.totalPage
+block main
+    if ! role.permissions.includes('product-view')
+        include ../../partials/strict
+    else
+        .app-content 
+            .app-content-header 
+                .app-content-text 
+                    h1.headerText Products 
+                .dark-mode-toggle
+                    i.bi.bi-moon-fill
+                if role.permissions.includes('product-create')
+                    a.btn.btn-success(href=`${prefixAdmin}/product/create`) Add Product 
+            .app-content-action 
+                form(id="form-search")
+                    input.search-bar(type="text" name="keyword" placeholder="Search..." value=searchInfo.keyword)
+                    button
+                        i.bi.bi-search
+                .dropdown.sortBtn
+                    div(class="dropdown-toggle", data-bs-toggle="dropdown", id="filter-dropdown", aria-expanded="false")
+                        |#{sortBtnTitle}
+                        i.bi.bi-filter-circle
+                    ul.dropdown-menu.dropdown-menu-dark
+                        each sortBtn in sortBtns
+                            li 
+                                .dropdown-item(btn-sort=`${sortBtn.field}-${sortBtn.btn_sort}`) #{sortBtn.name}
+                .dropdown.filterBtn
+                    div(class="dropdown-toggle", data-bs-toggle="dropdown", id="sort-dropdown", aria-expanded="false")
+                        |#{filterBtn}
+                        i.bi.bi-funnel-fill
+                    ul.dropdown-menu.dropdown-menu-dark
+                        each buttonFilter in buttonFilters
+                            li 
+                                .dropdown-item(btn-status=`${buttonFilter.btn_status}`) #{buttonFilter.name}
+            .app-content-table 
+                + alert-success(3000)
+                + alert-error(3000)
+                form(method="POST" name="selected-product-form" action="product/handle-form-action?_method=PATCH")
+                    .my-3.d-flex.gap-2
+                        .form-check
+                            input#checkBoxAll.form-check-input(type='checkbox', value='')
+                            label.form-check-label(for='flexCheckDefault')
+                            | Select All
+                        select#selectBox.form-select.form-select-sm(name='action')
+                            option(value='0', selected='') Open this select menu
+                            if role.permissions.includes('product-edit')
+                                option(value='1') Active
+                                option(value='2') Inactive
+                                option(value='4') Change position
+                            if role.permissions.includes('product-delete')
+                                option(value='3') Delete
+                        button#btnSelectBox.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#multipleSelectModal', disabled='')
+                            | Submit
+                        .modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true', id='multipleSelectModal', data-bs-theme="dark")
+                            .modal-dialog
+                                .modal-content
+                                    .modal-header
+                                        h1#multipleSelectModalLabel.modal-title.fs-5 Alert !!!
+                                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                    .modal-body Are you sure ?
+                                    .modal-footer
+                                        button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                        button#confirmButton.btn.btn-primary(name='positionChange' value) Save changes
+                        a(href=`${prefixAdmin}/product/trash` class='trash-link') #{deletedProduct} deleted products
+                    table.table
+                        thead
+                            tr  
+                                th(scope='col') 
+                                th(scope='col') #
+                                th(scope='col') Image
+                                th(scope='col') Name 
+                                th(scope='col') Description
+                                th(scope='col') Status
+                                th(scope='col') Position
+                                th(scope='col') Created By 
+                                th(scope='col') Lastest Update
+                                th(scope='col')
+                        tbody
+                            each product, index in products
+                                tr
+                                    td 
+                                        input(class="form-check-input" type="checkbox" value=product.id name="product" id="productCheckBox")
+                                    th(scope='row') #{index + 1}
+                                    td 
+                                        img(src=product.thumbnail
+                                            alt=product.title
+                                            width="100px"
+                                            height="auto"
+                                        )
+                                    td #{product.title}
+                                    td !{product.description}
+                                    td  
+                                        if (product.status == "active")
+                                            span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-success Active 
+                                        else 
+                                            span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-danger Inactive 
+                                    td 
+                                        input(
+                                            type="number"
+                                            value=product.position 
+                                            style="width: 50px"
+                                            min="1"
+                                            name="position"
+                                        )
+                                    td 
+                                        | #{product.accountCreate}
+                                        +parseDate(product.createdBy.createdAt)
+                                    td 
+                                        | #{product.accountUpdate}
+                                        +parseDateTime(product.accountUpdateTime)
+                                    td 
+                                        .btn-group
+                                            button.btn.btn-secondary.dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-expanded='false')
+                                                | Action
+                                            ul.dropdown-menu
+                                                li
+                                                    a.dropdown-item.edit-btn(href=`${prefixAdmin}/product/detail/${product.id}`) Detail
+                                                if role.permissions.includes('product-edit') 
+                                                    li 
+                                                        a.dropdown-item.edit-btn(href=`${prefixAdmin}/product/edit/${product.id}`) Edit
+                                                if role.permissions.includes('product-delete')
+                                                    li
+                                                        hr.dropdown-divider
+                                                    li
+                                                            a.dropdown-item(type='button', data-bs-toggle='modal', data-bs-target='#deleteOneModal', data-bs-id=product.id) Delete
+                                        .modal.fade(tabindex='-1', aria-labelledby='deleteOneModalLabel', aria-hidden='true', id="deleteOneModal", data-bs-theme="dark")
+                                                .modal-dialog
+                                                    .modal-content
+                                                        .modal-header
+                                                            h1#deleteOneModalLabel.modal-title.fs-5.text-light Alert
+                                                            button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                                        .modal-body.text-light You are soft deleting this product. You can restore it !
+                                                        .modal-footer
+                                                            button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                                            button.btn.btn-danger(type='button' data-bs-id=product.id id='delete-btn') Delete
+                ul.pagination
                     li.page-item
-                        div(class=`page-link ${page === pagination.currentPage ? 'active' : ''}` page-number=`${page}`) #{page++}
-                li.page-item
-                    .page-link.next-page(aria-label='Next')
-                        span(aria-hidden='true') &raquo;
-    form(action="", method="POST", data-path=`${prefixAdmin}/product/change-status`, id='form-change-status') 
-    form(action="", method="POST", data-path=`${prefixAdmin}/product/delete`, id='delete-product-form')
-    script(src="/admin/script/product.js")  
+                        .page-link.previous-page(aria-label='Previous')
+                            span(aria-hidden='true') &laquo;
+                    - var page = 1
+                    while page <= pagination.totalPage
+                        li.page-item
+                            div(class=`page-link ${page === pagination.currentPage ? 'active' : ''}` page-number=`${page}`) #{page++}
+                    li.page-item
+                        .page-link.next-page(aria-label='Next')
+                            span(aria-hidden='true') &raquo;
+        form(action="", method="POST", data-path=`${prefixAdmin}/product/change-status`, id='form-change-status') 
+        form(action="", method="POST", data-path=`${prefixAdmin}/product/delete`, id='delete-product-form')
+        script(src="/admin/script/product.js")  

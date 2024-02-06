@@ -2,49 +2,57 @@ extend ../../layouts/default
 include ../../mixins/alert
 
 block main 
-    .app-content 
-        .app-content-header 
-            .app-content-text 
-                h1.headerText Role 
-            .dark-mode-toggle
-                i.bi.bi-moon-fill
-            a.btn.btn-success(href=`${prefixAdmin}/role/create`) Add Role
-        .app-content-action 
-            a.permission-link(href=`${prefixAdmin}/role/permission`) 
-                i.bi.bi-person-fill-lock 
-                |Permission 
-        .app-content-table 
-            + alert-success(3000)
-            + alert-error(3000)
-            table.table
-                thead
-                    tr
-                    th(scope='col') #
-                    th(scope='col') Role 
-                    th(scope='col') Description
-                    th(scope='col')
-                    th(scope='col')
-                    th(scope='col')
-                tbody
-                    each role, index in roles 
+    if ! role.permissions.includes('role-permission-view')
+        include ../../partials/strict
+    else 
+        .app-content 
+            .app-content-header 
+                .app-content-text 
+                    h1.headerText Role 
+                .dark-mode-toggle
+                    i.bi.bi-moon-fill
+                if role.permissions.includes('role-permission-create')
+                    a.btn.btn-success(href=`${prefixAdmin}/role/create`) Add Role
+            .app-content-action 
+                a.permission-link(href=`${prefixAdmin}/role/permission`) 
+                    i.bi.bi-person-fill-lock 
+                    |Permission 
+            .app-content-table 
+                + alert-success(3000)
+                + alert-error(3000)
+                table.table
+                    thead
                         tr
-                        th(scope='row') #{index + 1}
-                        td #{role.title}
-                        td !{role.description}
-                        td
-                            a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/role/detail/${role.id}`) Detail
-                        td 
-                            a.btn.btn-warning.edit-btn(href=`${prefixAdmin}/role/edit/${role.id}`) Edit
-                        td
-                            .btn.btn-danger(type='button', data-bs-toggle='modal', data-bs-target='#deleteOneModal', data-bs-id=role.id) Delete
-                                    .modal.fade(tabindex='-1', aria-labelledby='deleteOneModalLabel', aria-hidden='true', id="deleteOneModal", data-bs-theme="dark")
-                                        .modal-dialog
-                                            .modal-content
-                                                .modal-header
-                                                    h1#deleteOneModalLabel.modal-title.fs-5.text-light Alert
-                                                    button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
-                                                .modal-body.text-light You are soft deleting this role. You can restore it !
-                                                .modal-footer
-                                                    button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                                    button.btn.btn-danger(type='button' data-bs-id=role.id id='delete-btn') Delete
-    script(src="/admin/script/role/index.js") 
+                        th(scope='col') #
+                        th(scope='col') Role 
+                        th(scope='col') Description
+                        th(scope='col')
+                        if role.permissions.includes('role-permission-edit')
+                            th(scope='col')
+                        if role.permissions.includes('role-permission-delete')
+                            th(scope='col')
+                    tbody
+                        each record, index in roles 
+                            tr
+                            th(scope='row') #{index + 1}
+                            td #{record.title}
+                            td !{record.description}
+                            td
+                                a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/role/detail/${record.id}`) Detail
+                            if role.permissions.includes('role-permission-edit')
+                                td 
+                                    a.btn.btn-warning.edit-btn(href=`${prefixAdmin}/role/edit/${record.id}`) Edit
+                            if role.permissions.includes('role-permission-delete')
+                                td
+                                    .btn.btn-danger(type='button', data-bs-toggle='modal', data-bs-target='#deleteOneModal', data-bs-id=role.id) Delete
+                                            .modal.fade(tabindex='-1', aria-labelledby='deleteOneModalLabel', aria-hidden='true', id="deleteOneModal", data-bs-theme="dark")
+                                                .modal-dialog
+                                                    .modal-content
+                                                        .modal-header
+                                                            h1#deleteOneModalLabel.modal-title.fs-5.text-light Alert
+                                                            button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                                        .modal-body.text-light You are soft deleting this role. You can restore it !
+                                                        .modal-footer
+                                                            button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                                            button.btn.btn-danger(type='button' data-bs-id=role.id id='delete-btn') Delete
+        script(src="/admin/script/role/index.js") 

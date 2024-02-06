@@ -28,8 +28,8 @@ const RoleController = {
                 deleted: false,
                 _id: req.params.id
             };
-            const role = await Role.findOne(find);
-            res.render('admin/pages/roles/edit', { role });
+            const record = await Role.findOne(find);
+            res.render('admin/pages/roles/edit', { record });
         } catch (error) {
             req.flash('error', 'Error !');
             res.redirect('/admin/role');            

@@ -1,4 +1,5 @@
 const ProductCategory = require('../../model/productsCategory.model');
+const Account = require('../../model/account.model');
 const searchHelper = require('../../helpers/search.helper');
 const buttonFilter = require('../../helpers/filterStatus.helper');
 const sortHelper = require('../../helpers/sortCategory.helper');
@@ -45,9 +46,25 @@ const ProductCategoryController = {
         else {
             SORT.position = 'desc';
         }
+
         const allProductCategories = await ProductCategory.find( Find );
         const productCategories = await ProductCategory.find( Find ).sort(SORT).limit(pagination.limit).skip(pagination.indexStart);
-        let records = hierarchyCategoryHelper(allProductCategories);
+        
+        let records = hierarchyCategoryHelper(allProductCategories);        // Create Tree 
+        
+        for(const category of productCategories) {                          // Find Creator
+            const account_create = await Account.findOne({_id: category.createdBy.account_id}).select('fullName');
+            if(account_create) {
+              category.accountCreate = account_create.fullName;
+            }
+            const lastestUpdateCategory = category.updatedBy.slice(-1)[0];
+            if(lastestUpdateCategory) {
+              const account_update = await Account.findOne({_id: lastestUpdateCategory.account_id}).select('fullName');
+              if(account_update)
+                category.accountUpdate = account_update.fullName;
+                category.accountUpdateTime = lastestUpdateCategory.updatedAt;
+            }
+        }
         res.render('./admin/pages/products-category/index', {
             productCategories,
             searchInfo,
@@ -75,6 +92,10 @@ const ProductCategoryController = {
         req.body.position = parseInt(req.body.position); 
         if(isNaN(req.body.position)) {
             req.body.position = await ProductCategory.countDocuments() + 1;
+        }
+        req.body.createdBy = {
+            account_id: res.locals.user.id,
+            createdAt: Date.now(),
         }
         const productCategory = new ProductCategory(req.body);
         await productCategory.save();
@@ -107,7 +128,14 @@ const ProductCategoryController = {
         if(isNaN(req.body.position)) {
             req.body.position = await ProductCategory.countDocuments() + 1;
         }
-        ProductCategory.updateOne({ _id: categoryId }, req.body)
+        const updatedBy = {
+            account_id: res.locals.user.id,
+            updatedAt: Date.now(),
+        }
+        ProductCategory.updateOne({ _id: categoryId }, 
+            { ...req.body,
+                $push: {updatedBy: updatedBy}
+            })
             .then(() => {
                 req.flash('success', 'Success! Your edit changes is successfully');
                 res.redirect('/admin/product-category');
@@ -129,7 +157,15 @@ const ProductCategoryController = {
     changeStatus: async(req, res) => {
         const status = req.params.status;
         const categoryId = req.params.id;
-        ProductCategory.updateOne({ _id: categoryId }, { status: status})
+        const updatedBy = {
+            account_id: res.locals.user.id,
+            updatedAt: Date.now(),
+        }
+        ProductCategory.updateOne({ _id: categoryId }, 
+            { 
+                status: status,
+                $push: {updatedBy: updatedBy}
+            })
             .then(() =>
             {
                 req.flash('success', 'Success! You have changed successfully');
@@ -140,9 +176,17 @@ const ProductCategoryController = {
     handleFormAction: async (req, res, next) => {
         const positionChange = req.body.positionChange.split(',');
         let ID = req.body.category;
+        const updatedBy = {
+            account_id: res.locals.user.id,
+            updatedAt: Date.now(),
+        }
         switch(req.body.action) {
           case '1':
-            ProductCategory.updateMany({ _id: { $in: ID }}, { status: 'active'})
+            ProductCategory.updateMany({ _id: { $in: ID }}, 
+                { 
+                    status: 'active',
+                    $push: {updatedBy: updatedBy}
+                })
               .then(() => 
                 {
                   req.flash('success', 'Success! You have changed successfully');
@@ -151,7 +195,11 @@ const ProductCategoryController = {
               .catch(next);
             break;
           case '2':
-            ProductCategory.updateMany({_id: { $in: ID }}, { status: 'inactive' })
+            ProductCategory.updateMany({_id: { $in: ID }}, 
+                { 
+                    status: 'inactive',
+                    $push: {updatedBy: updatedBy}
+                })
                 .then(() => {
                   req.flash('success', 'Success! You have changed successfully');
                   res.redirect('back')}
@@ -173,7 +221,11 @@ const ProductCategoryController = {
             if(typeof ID === 'string')
               ID = ID.split();
             for(let i = 0; i < ID.length; i++) {
-              await ProductCategory.updateOne( {_id: ID[i]}, {position: positionChange[i]} );
+                await ProductCategory.updateOne( {_id: ID[i]}, 
+                    {
+                        position: positionChange[i],
+                        $push: {updatedBy: updatedBy}
+                    });
             } 
             req.flash('success', 'Success! You have changed successfully');
             res.redirect('back');

@@ -1,74 +1,81 @@
 extend ../../layouts/default
 include ../../mixins/alert
+include ../../mixins/parseTime
 
 block main 
-    .app-content 
-        .app-content-header 
-            .app-content-text 
-                h1.headerText Trash 
-            .dark-mode-toggle
-                i.bi.bi-moon-fill
-        .app-content-action 
-            form(id="form-search")
-                input.search-bar(type="text" name="keyword" placeholder="Search..." value=searchInfo.keyword)
-                button
-                    i.bi.bi-search
-        .app-content-table 
-            + alert-success(3000)
-            + alert-error(3000)
-            table.table
-                thead
-                    tr  
-                        th(scope='col') #
-                        th(scope='col') Image
-                        th(scope='col') Name 
-                        th(scope='col') Description
-                        th(scope='col') Status
-                        th(scope='col') Price 
-                        th(scope='col') Order
-                        th(scope='col') 
-                        th(scope='col') 
-                tbody
-                    each product, index in products
-                        tr
-                            th(scope='row') #{index + 1}
-                            td 
-                                img(src=product.thumbnail
-                                    alt=product.title
-                                    width="100px"
-                                    height="auto"
-                                )
-                            td #{product.title}
-                            td #{product.description}
-                            td  
-                                if (product.status == "active")
-                                    span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-success Active 
-                                else 
-                                    span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-danger Inactive 
-                            td #{product.price}$
-                            td 
-                                input(
-                                    type="number"
-                                    value=product.position 
-                                    style="width: 50px"
-                                    min="1"
-                                    name="position"
-                                )
-                            td 
-                                button(class='btn btn-primary', data-id=product.id, class='restore-btn') Restore 
-                            td 
-                                .btn.btn-danger(type='button', data-bs-toggle='modal', data-bs-target='#destroyOneModal', data-id=product.id) Destroy
-                                .modal.fade(tabindex='-1', aria-labelledby='destroyOneModalLabel', aria-hidden='true', id="destroyOneModal", data-bs-theme="dark")
-                                    .modal-dialog
-                                        .modal-content
-                                            .modal-header
-                                                h1#destroyOneModalLabel.modal-title.fs-5.text-light Alert
-                                                button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
-                                            .modal-body.text-light You are eleminating this product. No way you can restore it !
-                                            .modal-footer
-                                                button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                                button(class='btn btn-danger', data-id=product.id, id='destroy-btn') Destroy
-        form(action=`${prefixAdmin}/product/trash/restore`, method="post", id='restore-form')  
-        form(action=`${prefixAdmin}/product/trash/destroy`, method="post", id='destroy-form') 
-        script(src="/admin/script/trash.js") 
-
+    if ! role.permissions.includes('product-view')
+        include ../../partials/strict
+    else 
+        .app-content 
+            .app-content-header 
+                .app-content-text 
+                    h1.headerText Trash 
+                .dark-mode-toggle
+                    i.bi.bi-moon-fill
+            .app-content-action 
+                form(id="form-search")
+                    input.search-bar(type="text" name="keyword" placeholder="Search..." value=searchInfo.keyword)
+                    button
+                        i.bi.bi-search
+            .app-content-table 
+                + alert-success(3000)
+                + alert-error(3000)
+                table.table
+                    thead
+                        tr  
+                            th(scope='col') #
+                            th(scope='col') Image
+                            th(scope='col') Name 
+                            th(scope='col') Description
+                            th(scope='col') Status
+                            th(scope='col') Price 
+                            th(scope='col') Order
+                            th(scope='col') Deleted By
+                            th(scope='col') 
+                            th(scope='col') 
+                    tbody
+                        each product, index in products
+                            tr
+                                th(scope='row') #{index + 1}
+                                td 
+                                    img(src=product.thumbnail
+                                        alt=product.title
+                                        width="100px"
+                                        height="auto"
+                                    )
+                                td #{product.title}
+                                td !{product.description}
+                                td  
+                                    if (product.status == "active")
+                                        span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-success Active 
+                                    else 
+                                        span(badge-status=product.status data-id=product.id btn-change-status).btn.badge.text-bg-danger Inactive 
+                                td #{product.price}$
+                                td 
+                                    input(
+                                        type="number"
+                                        value=product.position 
+                                        style="width: 50px"
+                                        min="1"
+                                        name="position"
+                                    )
+                                td 
+                                    | #{product.accountDelete}
+                                    +parseDateTime(product.deletedBy.deletedAt)
+                                td 
+                                    button(class='btn btn-primary', data-id=product.id, class='restore-btn') Restore 
+                                td 
+                                    .btn.btn-danger(type='button', data-bs-toggle='modal', data-bs-target='#destroyOneModal', data-id=product.id) Destroy
+                                    .modal.fade(tabindex='-1', aria-labelledby='destroyOneModalLabel', aria-hidden='true', id="destroyOneModal", data-bs-theme="dark")
+                                        .modal-dialog
+                                            .modal-content
+                                                .modal-header
+                                                    h1#destroyOneModalLabel.modal-title.fs-5.text-light Alert
+                                                    button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                                .modal-body.text-light You are eleminating this product. No way you can restore it !
+                                                .modal-footer
+                                                    button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                                    button(class='btn btn-danger', data-id=product.id, id='destroy-btn') Destroy
+            form(action=`${prefixAdmin}/product/trash/restore`, method="post", id='restore-form')  
+            form(action=`${prefixAdmin}/product/trash/destroy`, method="post", id='destroy-form') 
+            script(src="/admin/script/trash.js") 

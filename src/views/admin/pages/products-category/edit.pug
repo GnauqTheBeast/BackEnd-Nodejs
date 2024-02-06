@@ -2,60 +2,63 @@ extend ../../layouts/default
 include ../../mixins/alert
 include ../../mixins/select-tree
 
-block main 
-    +alert-error(3000)
-    .app-content
-        .app-content-header
-            .h3 Edit Product Category
-        .app-content-action
-        .app-content-table
-            form(action=`${prefixAdmin}/product-category/edit/${category.id}?_method=PATCH` method="POST" enctype="multipart/form-data") 
-                .mb-3
-                    label.form-label Title
-                    input.form-control(type='text', placeholder='Ex: Iphone X' name='title' value=category.title)
-                .mb-3
-                    label.form-label(for='parentId') Parent Id
-                    select(
-                        name="parentId"
-                        id="parentId"
-                        class="form-select"
-                    ) 
-                        option(value='') -- Select Parent Category --
-                        if(records) 
-                            +selectedTree(records, category.parentId, category.id)
-                .mb-3
-                    label.form-label Description
-                    textarea.form-control(rows='3' name='description') #{category.description}
-                .mb-3(upload-image)
-                    label.form-label Thumbnail
-                    .input-group
-                        input#inputImage.form-control(type='file' name="thumbnail" aria-describedby='basic-addon3 basic-addon4' accept="image/*")
-                    img(src=category.thumbnail, alt=category.title, id="imagePreview")
-                .mb-3
-                    label.form-label Position
-                    input.form-control(type='number' name='position' placeholder='Auto increase' value=category.position)
-                .mb-3 
-                    label.form-label Status
-                    .check-box
-                        .form-check.form-check-inline
-                            input#flexRadioDefault1.form-check-input(
-                                type='radio'
-                                name='status' 
-                                value='active'
-                                checked=(category.status==='active' ? true : false)
-                            )
-                            label.form-check-label(for='flexRadioDefault1')
-                                | Active
-                        .form-check.form-check-inline
-                            input#flexRadioDefault2.form-check-input(
-                                type='radio' 
-                                name='status' 
-                                value='inactive'
-                                checked=(category.status==='inactive' ? true : false)
-                            )
-                            label.form-check-label(for='flexRadioDefault2')
-                                | Inactive
-                button(type="submit" class="btn btn-primary") Update Changes
-    script(src="/tinymce/tinymce.min.js") 
-    script(src="/admin/script/tinymce-config.js")
-    script(src="/admin/script/product-category/create-product-category.js") 
+block main
+    if ! role.permissions.includes('product-category-edit')
+        include ../../partials/strict
+    else 
+        +alert-error(3000)
+        .app-content
+            .app-content-header
+                .h3 Edit Product Category
+            .app-content-action
+            .app-content-table
+                form(action=`${prefixAdmin}/product-category/edit/${category.id}?_method=PATCH` method="POST" enctype="multipart/form-data") 
+                    .mb-3
+                        label.form-label Title
+                        input.form-control(type='text', placeholder='Ex: Iphone X' name='title' value=category.title)
+                    .mb-3
+                        label.form-label(for='parentId') Parent Id
+                        select(
+                            name="parentId"
+                            id="parentId"
+                            class="form-select"
+                        ) 
+                            option(value='') -- Select Parent Category --
+                            if(records) 
+                                +selectedTree(records, category.parentId, category.id)
+                    .mb-3
+                        label.form-label Description
+                        textarea.form-control(rows='3' name='description') #{category.description}
+                    .mb-3(upload-image)
+                        label.form-label Thumbnail
+                        .input-group
+                            input#inputImage.form-control(type='file' name="thumbnail" aria-describedby='basic-addon3 basic-addon4' accept="image/*")
+                        img(src=category.thumbnail, alt=category.title, id="imagePreview")
+                    .mb-3
+                        label.form-label Position
+                        input.form-control(type='number' name='position' placeholder='Auto increase' value=category.position)
+                    .mb-3 
+                        label.form-label Status
+                        .check-box
+                            .form-check.form-check-inline
+                                input#flexRadioDefault1.form-check-input(
+                                    type='radio'
+                                    name='status' 
+                                    value='active'
+                                    checked=(category.status==='active' ? true : false)
+                                )
+                                label.form-check-label(for='flexRadioDefault1')
+                                    | Active
+                            .form-check.form-check-inline
+                                input#flexRadioDefault2.form-check-input(
+                                    type='radio' 
+                                    name='status' 
+                                    value='inactive'
+                                    checked=(category.status==='inactive' ? true : false)
+                                )
+                                label.form-check-label(for='flexRadioDefault2')
+                                    | Inactive
+                    button(type="submit" class="btn btn-primary") Update Changes
+        script(src="/tinymce/tinymce.min.js") 
+        script(src="/admin/script/tinymce-config.js")
+        script(src="/admin/script/product-category/create-product-category.js") 

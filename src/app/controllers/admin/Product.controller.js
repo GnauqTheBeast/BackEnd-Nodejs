@@ -1,5 +1,6 @@
 const Product = require('../../model/products.model');
 const ProductCategory = require('../../model/productsCategory.model');
+const Account = require('../../model/account.model');
 const buttonFilter = require('../../helpers/filterStatus.helper');
 const searchHelper = require('../../helpers/search.helper');
 const paginationHelper = require('../../helpers/pagination.helper');
@@ -51,10 +52,24 @@ const ProductController = {
       else {
         SORT.position = 'desc';
       }
-  
+      
       //
       Product.find( Find ).limit(pagination.limit).skip(pagination.indexStart).sort(SORT)
-        .then(products => {
+        .then(async products => {
+          // Find Product Creator
+          for(const product of products) {
+            const account_create = await Account.findOne({_id: product.createdBy.account_id}).select('fullName');
+            if(account_create) {
+              product.accountCreate = account_create.fullName;
+            }
+            const lastestUpdateProduct = product.updatedBy.slice(-1)[0];
+            if(lastestUpdateProduct) {
+              const account_update = await Account.findOne({_id: lastestUpdateProduct.account_id}).select('fullName');
+              if(account_update)
+                product.accountUpdate = account_update.fullName;
+                product.accountUpdateTime = lastestUpdateProduct.updatedAt;
+            }
+          }
           res.render('./admin/pages/products/index',
             {
               filterBtn,
@@ -73,7 +88,15 @@ const ProductController = {
     changeStatus: async (req, res, next) => {
       const status = req.params.status;
       const productId = req.params.id;
-      Product.updateOne({ _id: productId }, { status: status})
+      const updatedBy = {
+        account_id: res.locals.user.id,
+        updatedAt: new Date(),
+      }
+      Product.updateOne({ _id: productId }, 
+        { 
+          status: status,
+          $push: { updatedBy: updatedBy }
+        })
         .then(() =>
           {
             req.flash('success', 'Success! You have changed successfully');
@@ -85,9 +108,16 @@ const ProductController = {
     handleFormAction: async (req, res, next) => {
       const positionChange = req.body.positionChange.split(',');
       const ID = req.body.product;
+      const updatedBy = {
+        account_id: res.locals.user.id,
+        updatedAt: Date.now(),
+      }
       switch(req.body.action) {
         case '1':
-          Product.updateMany({ _id: { $in: ID }}, { status: 'active'})
+          Product.updateMany({ _id: { $in: ID }}, { 
+            status: 'active',
+            $push: { updatedBy: updatedBy }
+          })
             .then(() => 
               {
                 req.flash('success', 'Success! You have changed successfully');
@@ -96,7 +126,10 @@ const ProductController = {
             .catch(next);
           break;
         case '2':
-          Product.updateMany({_id: { $in: ID }}, { status: 'inactive' })
+          Product.updateMany({_id: { $in: ID }}, { 
+            status: 'inactive',
+            $push: { updatedBy: updatedBy }
+          })
               .then(() => {
                 req.flash('success', 'Success! You have changed successfully');
                 res.redirect('back')}
@@ -106,7 +139,9 @@ const ProductController = {
         case '3':
           Product.updateMany({_id: { $in: ID }}, {
             deleted: true,
-            deletedAt: new Date()
+            deletedBy: {
+              account_id: res.locals.id
+            }
           })
               .then(() => {
                 req.flash('success', 'Success! You have changed successfully');
@@ -119,7 +154,10 @@ const ProductController = {
           if(typeof productId === 'string')
             productId = productId.split();
           for(let i = 0; i < productId.length; i++) {
-            await Product.updateOne( {_id: productId[i]}, {position: positionChange[i]} );
+            await Product.updateOne( {_id: productId[i]}, { 
+              position: positionChange[i],
+              $push: { updatedBy: updatedBy }
+            } );
           } 
           req.flash('success', 'Success! You have changed successfully');
           res.redirect('back');
@@ -133,7 +171,10 @@ const ProductController = {
       const productId = req.params.id;
       Product.updateOne({ _id: productId }, { 
         deleted: true,
-        deletedAt: new Date()
+        deletedBy: {
+          account_id: res.locals.user.id,
+          deletedAt: Date.now(),
+        }
       })
         .then(() => res.redirect('back'))
     },
@@ -147,6 +188,10 @@ const ProductController = {
       req.body.position = parseInt(req.body.position); 
       if(isNaN(req.body.position)) {
         req.body.position = await Product.countDocuments() + 1;
+      }
+      req.body.createdBy = {
+        account_id: res.locals.user.id,
+        createdAt: Date.now(),
       }
       const product = new Product(req.body);
       await product.save();
@@ -180,11 +225,27 @@ const ProductController = {
       if(req.file) {
         req.body.thumbnail = `/uploads/${req.file.filename}`;
       }
-      Product.findByIdAndUpdate({ _id: req.params.id }, req.body)
-        .then(() => {
-          req.flash('success', 'Success! Your edit changes is successfully');
+      try {
+        const updatedBy = {
+          account_id: res.locals.user.id,
+          updatedAt: new Date(),
+        }
+        Product.findByIdAndUpdate(
+          { _id: req.params.id }, 
+          {
+            ...req.body,
+            $push: {
+              updatedBy: updatedBy,
+            }
+          })
+          .then(() => {
+            req.flash('success', 'Success! Your edit changes is successfully');
+            res.redirect('/admin/product');
+          })
+      } catch (error) {
+          req.flash('error', 'Error updated');
           res.redirect('/admin/product');
-        })
+      }
     },
     // [GET] /detail/:id
     detail: async (req, res) => {
@@ -196,7 +257,7 @@ const ProductController = {
         }));
     },
     // [GET] /trash
-    trash: (req, res) => {
+    trash: async (req, res) => {
       const find = {
         deleted: true
       }
@@ -205,12 +266,18 @@ const ProductController = {
       if(searchInfo.keyword) {
         find.title = searchInfo.title;
       }
-      Product.find(find)
-        .then(products => res.render('./admin/pages/products/trash', 
-          {
-           products,
-           searchInfo,
-          }));
+      const products = await Product.find(find);
+      for(const product of products) {
+        const account = await Account.findOne({_id: product.deletedBy.account_id});
+        if(account) {
+          product.accountDelete = account.fullName;
+        }
+      }
+      res.render('./admin/pages/products/trash', 
+      {
+        products,
+        searchInfo,
+      });
     },
     // [PATCH] /trash/restore/:id
     restore: (req, res) => {

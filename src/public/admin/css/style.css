@@ -198,6 +198,7 @@ i {
 .alert i {
     margin-left: 5px;
     color: #adb5bd;
+    cursor: pointer;
 }
 
 @keyframes slideFromLeftSide {
@@ -259,4 +260,11 @@ i {
 
 .permission-link:hover {
     opacity: 0.8;
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
 }

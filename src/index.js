@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const moment = require('moment');
 require('dotenv').config();
 
 // TinyMCE
@@ -29,6 +30,7 @@ app.use(methodOverride('_method'));
 
 // Local Variables
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
+app.locals.moment = moment;
 
 // Connect to Db 
 ConnectDb();

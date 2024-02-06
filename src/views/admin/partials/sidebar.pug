@@ -1,6 +1,27 @@
 .sidebar 
     .sidebar-head 
-        .sidebar-head-text Admin
+        .sidebar-head-text 
+            .btn-group(data-bs-theme="dark") 
+                a.btn.btn-secondary.btn-sm(href=`${prefixAdmin}/my-account`)
+                    img(
+                        src=user.avatar 
+                        alt=user.fullName 
+                        class="avatar"
+                    )
+                    | #{user.fullName}
+                button.btn.btn-sm.btn-secondary.dropdown-toggle.dropdown-toggle-split(type='button', data-bs-toggle='dropdown', aria-expanded='false')
+                    span.visually-hidden Toggle Dropdown
+                ul.dropdown-menu
+                    li
+                        a.dropdown-item(href='#') Action
+                    li
+                        a.dropdown-item(href='#') Another action
+                    li 
+                        hr.dropdown-divider
+                    li
+                        a.dropdown-item(href=`${prefixAdmin}/auth/logout`)
+                            i.bi.bi-door-open-fill 
+                            |Log out
     .sidebar-body 
         .sidebar-list-item
             a.sidebar-body-child(href=`${prefixAdmin}/dashboard` btn-page='dashboard')
@@ -21,6 +42,3 @@
             a.sidebar-body-child(href=`${prefixAdmin}/inbox` btn-page='inbox')
                 i.bi.bi-inbox-fill 
                 |Inbox 
-            a.sidebar-body-child(href=`${prefixAdmin}/auth/logout` btn-page='logout')
-                i.bi.bi-door-open-fill
-                |Logout

@@ -1,0 +1,25 @@
+extend ../../layouts/default
+include ../../mixins/alert
+
+block main 
+    .app-content
+        .app-content-header
+            .h4 Profile: #{user.title}
+        .app-content-action
+        .app-content-table
+            .detail-content
+                .my-3
+                    img(src=user.avatar alt=user.fullName, id="imagePreview")
+                .my-3
+                    div 
+                    | Full Name: #{user.fullName}
+                .my-3
+                    div 
+                    | Description: !{user.description}
+                .mb-3 
+                    label.form-label Status: 
+                    - if (user.status === 'active')
+                        .badge.text-bg-success Active 
+                    - else 
+                        .badge.text-bg-danger Inactive 
+                a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/my-account/edit`) Edit Profile  

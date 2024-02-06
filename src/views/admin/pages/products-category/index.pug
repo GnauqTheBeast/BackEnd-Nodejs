@@ -1,133 +1,155 @@
 extend ../../layouts/default
 include ../../mixins/alert
 include ../../mixins/select-tree
+include ../../mixins/parseTime 
 
 block main 
-    .app-content 
-        .app-content-header 
-            .app-content-text 
-                h1.headerText Products Category 
-            .dark-mode-toggle
-                i.bi.bi-moon-fill
-            a.btn.btn-success(href=`${prefixAdmin}/product-category/create`) Add Product Category
-        .app-content-action 
-            form(id="form-search")
-                input.search-bar(type="text" name="keyword" placeholder="Search..." value=searchInfo.keyword)
-                button
-                    i.bi.bi-search
-            .dropdown.sortBtn
-                div(class="dropdown-toggle", data-bs-toggle="dropdown", id="filter-dropdown", aria-expanded="false")
-                    |#{sortBtnTitle}
-                    i.bi.bi-filter-circle
-                ul.dropdown-menu.dropdown-menu-dark
-                    each sortBtn in sortBtns
-                        li 
-                            .dropdown-item(btn-sort=`${sortBtn.field}-${sortBtn.btn_sort}`) #{sortBtn.name}
-            .dropdown.filterBtn
-                div(class="dropdown-toggle", data-bs-toggle="dropdown", id="sort-dropdown", aria-expanded="false")
-                    |#{filterBtn}
-                    i.bi.bi-funnel-fill
-                ul.dropdown-menu.dropdown-menu-dark
-                    each buttonFilter in buttonFilters
-                        li 
-                            .dropdown-item(btn-status=`${buttonFilter.btn_status}`) #{buttonFilter.name}
-        .app-content-table 
-            + alert-success(3000)
-            + alert-error(3000)
-            form(method="POST" name="selected-product-category-form" action="product-category/handle-form-action?_method=PATCH")
-                .my-3.d-flex.gap-2
-                    .form-check
-                        input#checkBoxAll.form-check-input(type='checkbox', value='')
-                        label.form-check-label
-                        | Select All
-                    select#selectBox.form-select.form-select-sm(name='action')
-                        option(value='0', selected='') Open this select menu
-                        option(value='1') Active
-                        option(value='2') Inactive
-                        option(value='3') Delete
-                        option(value='4') Change position
-                    button#btnSelectBox.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#multipleSelectModal', disabled='')
-                        | Submit
-                    .modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true', id='multipleSelectModal', data-bs-theme="dark")
-                        .modal-dialog
-                            .modal-content
-                                .modal-header
-                                    h1#multipleSelectModalLabel.modal-title.fs-5 Alert !!!
-                                    button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
-                                .modal-body Are you sure ?
-                                .modal-footer
-                                    button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                    button#confirmButton.btn.btn-primary(name='positionChange' value) Save changes
-                table.table
-                    thead
-                        tr  
-                            th(scope='col') 
-                            th(scope='col') #
-                            th(scope='col') Image
-                            th(scope='col') Name 
-                            th(scope='col') Description
-                            th(scope='col') Status
-                            th(scope='col') Position
-                            th(scope='col') 
-                            th(scope='col') 
-                            th(scope='col') 
-                    tbody
-                        each productCategory, index in productCategories
-                            tr
-                                td 
-                                    input(class="form-check-input" type="checkbox" value=productCategory.id name="category" id="categoryCheckBox")
-                                th(scope='row') #{index + 1}
-                                td 
-                                    img(src=productCategory.thumbnail
-                                        alt=productCategory.title
-                                        width="100px"
-                                        height="auto"
-                                    )
-                                td 
-                                    +hierachyName(records, productCategory.id)
-                                td !{productCategory.description}
-                                td  
-                                    if (productCategory.status == "active")
-                                        span(badge-status=productCategory.status data-id=productCategory.id btn-change-status).btn.badge.text-bg-success Active 
-                                    else 
-                                        span(badge-status=productCategory.status data-id=productCategory.id btn-change-status).btn.badge.text-bg-danger Inactive 
-                                td 
-                                    input(
-                                        type="number"
-                                        value=productCategory.position 
-                                        style="width: 50px"
-                                        min="1"
-                                        name="position"
-                                    )
-                                td 
-                                    a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product-category/detail/${productCategory.id}`) Detail
-                                td 
-                                    a.btn.btn-warning.edit-btn(href=`${prefixAdmin}/product-category/edit/${productCategory.id}`) Edit
-                                td
-                                    .btn.btn-danger(type='button', data-bs-toggle='modal', data-bs-target='#deleteOneModal', data-bs-id=productCategory.id) Delete
-                                    .modal.fade(tabindex='-1', aria-labelledby='deleteOneModalLabel', aria-hidden='true', id="deleteOneModal", data-bs-theme="dark")
-                                        .modal-dialog
-                                            .modal-content
-                                                .modal-header
-                                                    h1#deleteOneModalLabel.modal-title.fs-5.text-light Alert
-                                                    button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
-                                                .modal-body.text-light You are soft deleting this productCategory. You can restore it !
-                                                .modal-footer
-                                                    button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                                    button.btn.btn-danger(type='button' data-bs-id=productCategory.id id='delete-btn') Delete
-        nav
-            ul.pagination
-                li.page-item
-                    .page-link.previous-page(aria-label='Previous')
-                        span(aria-hidden='true') &laquo;
-                - var page = 1
-                while page <= pagination.totalPage
+    if !role.permissions.includes('product-category-view')
+        include ../../partials/strict
+    else 
+        .app-content 
+            .app-content-header 
+                .app-content-text 
+                    h1.headerText Products Category 
+                .dark-mode-toggle
+                    i.bi.bi-moon-fill
+                if role.permissions.includes('product-category-create')
+                    a.btn.btn-success(href=`${prefixAdmin}/product-category/create`) Add Product Category
+            .app-content-action 
+                form(id="form-search")
+                    input.search-bar(type="text" name="keyword" placeholder="Search..." value=searchInfo.keyword)
+                    button
+                        i.bi.bi-search
+                .dropdown.sortBtn
+                    div(class="dropdown-toggle", data-bs-toggle="dropdown", id="filter-dropdown", aria-expanded="false")
+                        |#{sortBtnTitle}
+                        i.bi.bi-filter-circle
+                    ul.dropdown-menu.dropdown-menu-dark
+                        each sortBtn in sortBtns
+                            li 
+                                .dropdown-item(btn-sort=`${sortBtn.field}-${sortBtn.btn_sort}`) #{sortBtn.name}
+                .dropdown.filterBtn
+                    div(class="dropdown-toggle", data-bs-toggle="dropdown", id="sort-dropdown", aria-expanded="false")
+                        |#{filterBtn}
+                        i.bi.bi-funnel-fill
+                    ul.dropdown-menu.dropdown-menu-dark
+                        each buttonFilter in buttonFilters
+                            li 
+                                .dropdown-item(btn-status=`${buttonFilter.btn_status}`) #{buttonFilter.name}
+            .app-content-table 
+                + alert-success(3000)
+                + alert-error(3000)
+                form(method="POST" name="selected-product-category-form" action="product-category/handle-form-action?_method=PATCH")
+                    .my-3.d-flex.gap-2
+                        .form-check
+                            input#checkBoxAll.form-check-input(type='checkbox', value='')
+                            label.form-check-label
+                            | Select All
+                        select#selectBox.form-select.form-select-sm(name='action')
+                            option(value='0', selected='') Open this select menu
+                            if role.permissions.includes('product-category-edit')
+                                option(value='1') Active
+                                option(value='2') Inactive
+                                option(value='4') Change position
+                            if role.permissions.includes('product-category-delete')
+                                option(value='3') Delete
+                        button#btnSelectBox.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#multipleSelectModal', disabled='')
+                            | Submit
+                        .modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true', id='multipleSelectModal', data-bs-theme="dark")
+                            .modal-dialog
+                                .modal-content
+                                    .modal-header
+                                        h1#multipleSelectModalLabel.modal-title.fs-5 Alert !!!
+                                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                    .modal-body Are you sure ?
+                                    .modal-footer
+                                        button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                        button#confirmButton.btn.btn-primary(name='positionChange' value) Save changes
+                    table.table
+                        thead
+                            tr  
+                                th(scope='col') 
+                                th(scope='col') #
+                                th(scope='col') Image
+                                th(scope='col') Name 
+                                th(scope='col') Description
+                                th(scope='col') Status
+                                th(scope='col') Position
+                                th(scope='col') Created By
+                                th(scope='col') Lastest Update
+                                th(scope='col') 
+                        tbody
+                            each productCategory, index in productCategories
+                                tr
+                                    td 
+                                        input(class="form-check-input" type="checkbox" value=productCategory.id name="category" id="categoryCheckBox")
+                                    th(scope='row') #{index + 1}
+                                    td 
+                                        img(src=productCategory.thumbnail
+                                            alt=productCategory.title
+                                            width="100px"
+                                            height="auto"
+                                        )
+                                    td 
+                                        +hierachyName(records, productCategory.id)
+                                    td !{productCategory.description}
+                                    td  
+                                        if (productCategory.status == "active")
+                                            span(badge-status=productCategory.status data-id=productCategory.id btn-change-status).btn.badge.text-bg-success Active 
+                                        else 
+                                            span(badge-status=productCategory.status data-id=productCategory.id btn-change-status).btn.badge.text-bg-danger Inactive 
+                                    td 
+                                        input(
+                                            type="number"
+                                            value=productCategory.position 
+                                            style="width: 50px"
+                                            min="1"
+                                            name="position"
+                                        )
+                                    td  
+                                        | #{productCategory.accountCreate}
+                                        +parseDate(productCategory.createdBy.createdAt)
+                                    td  
+                                        | #{productCategory.accountUpdate}
+                                        +parseDate(productCategory.accountUpdateTime)
+                                    td 
+                                        .btn-group
+                                            button.btn.btn-secondary.dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-expanded='false')
+                                                | Action
+                                            ul.dropdown-menu
+                                                li
+                                                    a.dropdown-item.edit-btn(href=`${prefixAdmin}/product-category/detail/${productCategory.id}`) Detail
+                                                if role.permissions.includes('product-category-edit') 
+                                                    li 
+                                                        a.dropdown-item.edit-btn(href=`${prefixAdmin}/product-category/edit/${productCategory.id}`) Edit
+                                                if role.permissions.includes('product-category-delete')
+                                                    li
+                                                        hr.dropdown-divider
+                                                    li
+                                                        a.dropdown-item(type='button', data-bs-toggle='modal', data-bs-target='#deleteOneModal', data-bs-id=productCategory.id) Delete
+                                        .modal.fade(tabindex='-1', aria-labelledby='deleteOneModalLabel', aria-hidden='true', id="deleteOneModal", data-bs-theme="dark")
+                                            .modal-dialog
+                                                .modal-content
+                                                    .modal-header
+                                                        h1#deleteOneModalLabel.modal-title.fs-5.text-light Alert
+                                                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                                    .modal-body.text-light You are soft deleting this productCategory. You can restore it !
+                                                    .modal-footer
+                                                        button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                                        button.btn.btn-danger(type='button' data-bs-id=productCategory.id id='delete-btn') Delete
+            nav
+                ul.pagination
                     li.page-item
-                        div(class=`page-link ${page === pagination.currentPage ? 'active' : ''}` page-number=`${page}`) #{page++}
-                li.page-item
-                    .page-link.next-page(aria-label='Next')
-                        span(aria-hidden='true') &raquo;
-    form(action="", method="post", id='delete-form',data-path=`${prefixAdmin}/product-category/delete`) 
-    form(action="", method="post", id='form-change-status', data-path=`${prefixAdmin}/product-category/change-status`) 
-    form(action="", method="post", id='selected-category-form') 
-    script(src="/admin/script/product-category/product-category.js") 
+                        .page-link.previous-page(aria-label='Previous')
+                            span(aria-hidden='true') &laquo;
+                    - var page = 1
+                    while page <= pagination.totalPage
+                        li.page-item
+                            div(class=`page-link ${page === pagination.currentPage ? 'active' : ''}` page-number=`${page}`) #{page++}
+                    li.page-item
+                        .page-link.next-page(aria-label='Next')
+                            span(aria-hidden='true') &raquo;
+        form(action="", method="post", id='delete-form',data-path=`${prefixAdmin}/product-category/delete`) 
+        form(action="", method="post", id='form-change-status', data-path=`${prefixAdmin}/product-category/change-status`) 
+        form(action="", method="post", id='selected-category-form') 
+        script(src="/admin/script/product-category/product-category.js") 

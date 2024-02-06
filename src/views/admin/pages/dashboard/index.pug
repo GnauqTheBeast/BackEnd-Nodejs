@@ -1,2 +1,15 @@
 extend ../../layouts/default
 
+block main 
+    .app-content 
+        .app-content-header 
+            .app-content-text 
+                h1.headerText Dashboard 
+            .dark-mode-toggle
+                i.bi.bi-moon-fill
+            a.btn.btn-success(href=`${prefixAdmin}/account/create`) 
+        .app-content-action 
+        .app-content-table 
+            div #{user}
+            div -------------------------------
+            div #{role}
