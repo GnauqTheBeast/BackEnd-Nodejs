@@ -56,7 +56,6 @@ body {
 }
 
 footer {
-    position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -126,4 +125,41 @@ button i {
     max-width: 300px;
     height: auto;
     border-radius: 5px;
+}
+
+.sub-menu {
+    position: relative;
+}
+
+.sub-menu ul {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    list-style: none;
+    display: none;
+    background-color: #f1f1f1;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.sub-menu a {
+    text-decoration: none;
+}
+
+.sub-menu ul li {
+    position: relative;
+}
+
+.sub-menu:hover > ul {
+    display: block;
+}
+
+.sub-menu ul li ul {
+    left: 100%;
+    top: 0;
+}
+
+.sub-menu ul li:hover > ul {
+    display: block;
 }

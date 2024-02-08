@@ -4,5 +4,5 @@ mixin productBox(item)
       .card-body
         h5.card-title #{item.title}
         p.card-text
-          | #{item.description}
+          | !{item.description}
         a.btn.btn-primary(href=`/product/${item.slug}`) Click here
