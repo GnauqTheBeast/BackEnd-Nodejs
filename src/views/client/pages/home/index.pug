@@ -1,12 +1,7 @@
 extends ../../layouts/default
-include ../../mixins/boxhead
+include ../../mixins/product-grid 
 
 block main 
     .container-md
-      .row
-        .col-md-4
-          | Column
-        .col-md-4
-          | Column
-        .col-md-4
-          | Column
+      +productGrid('Featured Product', featuredProduct)
+      +productGrid('Latest Product', latestProduct)

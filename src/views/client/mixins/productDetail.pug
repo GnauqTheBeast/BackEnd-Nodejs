@@ -1,7 +1,11 @@
 mixin productDetail(product)
     .detail-product
             .img-product
-                img(src=product.thumbnail, alt="", id="imagePreview")
+                img(
+                    src=product.thumbnail 
+                    alt=product.title
+                    id="imagePreview"
+                    )
             .info-product
                 .product-title #{product.title}
                 .product-price $#{product.price}

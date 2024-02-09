@@ -13,7 +13,7 @@ block main
             .app-content-table
                 .detail-content
                     .my-3(upload-image)
-                        img(src=product.thumbnail, alt="", id="imagePreview")
+                        img(src=product.thumbnail, alt=product.title, id="imagePreview")
                     .my-3
                         div 
                         | Category: 
@@ -26,9 +26,15 @@ block main
                     .mb-3
                         div Position: #{product.position}
                     .mb-3 
+                        label.form-label Featured: 
+                        - if (product.featured === true)
+                            .badge.text-bg-success.mx-2 Yes
+                        - else 
+                            .badge.text-bg-secondary.mx-2 No
+                    .mb-3 
                         label.form-label Status: 
                         - if (product.status === 'active')
-                            .badge.text-bg-success Active 
+                            .badge.text-bg-success.mx-2  Active 
                         - if (product.status === 'inactive')
-                            .badge.text-bg-danger Inactive 
+                            .badge.text-bg-danger.mx-2  Inactive 
                     a.btn.btn-secondary.edit-btn(href=`${prefixAdmin}/product/edit/${product._id}`) Edit Product  

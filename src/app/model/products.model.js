@@ -32,6 +32,7 @@ const Product = new Schema({
             updatedAt: Date,
         }
     ],
+    featured: Boolean,
     slug: {
         type: String, slug: 'title', unique: true
     }

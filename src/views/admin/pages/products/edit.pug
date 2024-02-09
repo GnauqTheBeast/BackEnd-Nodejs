@@ -44,6 +44,17 @@ block main
                         label.form-label Position
                         input.form-control(type='number' name='position' placeholder='Auto increase' value=product.position)
                     .mb-3 
+                        label.form-label Featured
+                        .check-box
+                            .form-check.form-check-inline
+                                input#flexRadioDefault1.form-check-input(type='radio', name='featured' value='true' checked=(product.featured==true ? true : false))
+                                label.form-check-label
+                                    | Yes
+                            .form-check.form-check-inline
+                                input#flexRadioDefault2.form-check-input(type='radio', name='featured' value='false' checked=(product.featured==false ? true : false))
+                                label.form-check-label
+                                    | No
+                    .mb-3 
                         label.form-label Status
                         .check-box
                             .form-check.form-check-inline

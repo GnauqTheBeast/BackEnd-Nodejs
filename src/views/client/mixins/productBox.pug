@@ -1,8 +1,11 @@
 mixin productBox(item)
-    .card(style='width: 18rem;')
-      img.card-img-top(src=item.thumbnail, alt=item.slug)
-      .card-body
-        h5.card-title #{item.title}
-        p.card-text
-          | !{item.description}
-        a.btn.btn-primary(href=`/product/${item.slug}`) Click here
+    .card
+      a(href=`/product/detail/${item.slug}`)
+        if item.featured == true
+          .featured-product-badge.badge.text-bg-success Hot
+        img.card-img-top(src=item.thumbnail, alt=item.slug)
+        .card-body
+          h6.card-title #{item.title}
+          //- p.card-text
+          //-   | !{item.description}
+          

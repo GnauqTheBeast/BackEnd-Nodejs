@@ -1,11 +1,6 @@
 extends ../../layouts/default
-include ../../mixins/productBox
-include ../../mixins/boxhead
+include ../../mixins/product-grid 
 
 block main     
-    +boxhead(titlePage)
-    .container-md
-        .row
-            each item in product 
-                .col-md-4
-                    +productBox(item)
+    .container 
+        +productGrid(categoryTitle, productList)

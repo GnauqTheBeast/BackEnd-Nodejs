@@ -1,0 +1,8 @@
+include ./productBox
+
+mixin productGrid(title, items)
+    .title #{title}
+    .row  
+        each item in items 
+            .col-md-3.my-2
+                +productBox(item)

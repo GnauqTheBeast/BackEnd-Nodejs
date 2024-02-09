@@ -33,6 +33,17 @@ block main
                         label.form-label Position
                         input.form-control(type='number' name='position' placeholder='Auto increase')
                     .mb-3 
+                        label.form-label Featured
+                        .check-box
+                            .form-check.form-check-inline
+                                input#flexRadioDefault1.form-check-input(type='radio', name='featured' value='true')
+                                label.form-check-label
+                                    | Yes
+                            .form-check.form-check-inline
+                                input#flexRadioDefault2.form-check-input(type='radio', name='featured' value='false' checked='')
+                                label.form-check-label
+                                    | No
+                    .mb-3 
                         label.form-label Status
                         .check-box
                             .form-check.form-check-inline

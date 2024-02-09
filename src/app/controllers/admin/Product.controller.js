@@ -176,7 +176,12 @@ const ProductController = {
           deletedAt: Date.now(),
         }
       })
-        .then(() => res.redirect('back'))
+        .then(() => 
+          {
+            req.flash('success', 'Successfully delete temperary');
+            res.redirect('back');
+          }
+        )
     },
     // [GET] /create
     create: (req, res) => {
@@ -193,6 +198,7 @@ const ProductController = {
         account_id: res.locals.user.id,
         createdAt: Date.now(),
       }
+      req.body.featured == 'true' ? req.body.featured = true : req.body.featured = false;
       const product = new Product(req.body);
       await product.save();
       res.redirect('../product');
@@ -225,6 +231,7 @@ const ProductController = {
       if(req.file) {
         req.body.thumbnail = `/uploads/${req.file.filename}`;
       }
+      req.body.featured == 'true' ? req.body.featured = true : req.body.featured = false;
       try {
         const updatedBy = {
           account_id: res.locals.user.id,

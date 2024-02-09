@@ -1,4 +1,6 @@
 const Product = require('../../model/products.model');
+const ProductCategory = require('../../model/productsCategory.model');
+const categoryProductHelper = require('../../helpers/category-product.helper');
 
 const ProductController = {
   // [GET] /product
@@ -8,13 +10,13 @@ const ProductController = {
       status: 'active'
     }
     Product.find(find)
-      .then(product => res.render('client/pages/products/index', 
+      .then(productList => res.render('client/pages/products/index', 
       { 
-        titlePage: "Product list:",
-        product 
-      }))
+        categoryTitle: "Product list:",
+        productList 
+      }));
   },
-  // [GET] /detail/:slug
+  // [GET] product/detail/:slug
   detail: (req, res) => {
     const find = {
       deleted: false, 
@@ -26,6 +28,22 @@ const ProductController = {
       { 
         product 
       }));
+  },
+  // [GET] /product/:slugCategory
+  category: async (req, res) => {
+    let find = {
+      deleted: false, 
+      status: 'active',
+      slug: req.params.slugCategory,
+    }
+    const category = await ProductCategory.findOne(find);
+    const categoryList = await categoryProductHelper(category.id);
+    const categoryTitle = category.title;
+    const productList = await Product.find({categoryId: {$in: categoryList}});
+    res.render('client/pages/products/index', {
+      categoryTitle, 
+      productList,
+    })
   }
 };
 
