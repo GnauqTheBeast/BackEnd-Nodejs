@@ -164,6 +164,11 @@ button i {
     display: block;
 }
 
+.col-md-3 {
+    display: flex;
+    justify-content: center;
+}
+
 .card {
     width: 11rem;
     height: 100%;
