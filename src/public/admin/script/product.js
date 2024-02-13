@@ -70,4 +70,3 @@ confirmButton.onclick = () => {
     confirmButton.value = POS;
     selectedProductForm.submit();
 }
-

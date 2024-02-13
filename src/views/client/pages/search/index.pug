@@ -1,0 +1,6 @@
+extends ../../layouts/default
+include ../../mixins/product-grid 
+
+block main 
+  .container-md
+    +productGrid('Search Result Product', searchProduct)

@@ -5,9 +5,17 @@
 }
 
 body {
-    font-family: 'Open Sans', sans-serif;
     font-family: 'Rubik', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     min-height: 100vh;
+}
+
+footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #495057;
+    margin-top: 20px;
 }
 
 .title {
@@ -53,13 +61,6 @@ body {
 
 .productPrice {
     font-weight: 700;
-}
-
-footer {
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: #495057;
 }
 
 .test {
@@ -192,6 +193,48 @@ button i {
     right: 0;
 }
 
-footer {
-    margin-top: 20px;
+.message {
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    z-index: 9999;
+    transition: all linear 0.3s;
+    animation: slideFromLeftSide ease 1s, fadeOut linear 1s 3s forwards;
+}
+
+.alert i {
+    margin-left: 5px;
+    color: #adb5bd;
+    cursor: pointer;
+}
+
+@keyframes slideFromLeftSide {
+    from {
+      opacity: 0;
+      transform: translateX(calc(100% + 32px));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+}
+  
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+.thumbnail {
+    width: 140px;
+    height: auto;
+}
+
+.empty-cart {
+    display: flex;
+    flex-direction: column;
+}
+
+.quantity-product-input {
+    width: 60px;
 }

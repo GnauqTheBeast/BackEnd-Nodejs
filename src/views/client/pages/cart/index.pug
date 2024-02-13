@@ -1,0 +1,49 @@
+extends ../../layouts/default
+include ../../mixins/alert
+
+block main
+    .main-content
+        if cart.products.length <= 0
+            .empty-cart
+                h2.my-3 Empty Cart
+                a.btn.btn-success(href="/")
+                    i(class="bi bi-cart4")
+                    |Shop Now
+        else  
+            +alert-success(3000)
+            form(action="", method="POST") 
+                h5.my-2 Shopping Cart
+                table.table.table-bordered
+                    thead
+                        tr
+                        th(scope='col') #
+                        th(scope='col') Thumbnail
+                        th(scope='col') Product
+                        th(scope='col') Price
+                        th(scope='col') Quantity
+                        th(scope='col') Total
+                        th(scope='col') 
+                    tbody
+                        each item, index in cart.products
+                            tr
+                            th(scope='row' name='item.productInfo.id') #{index + 1}
+                            td
+                                img.thumbnail(src=item.productInfo.thumbnail, alt=item.productInfo.title)
+                            td 
+                                a(href=`/product/detail/${item.productInfo.slug}`) #{item.productInfo.title}
+                            td #{item.productInfo.price}$
+                            td 
+                                input(
+                                    type="number" 
+                                    min='1' 
+                                    value=item.quantity 
+                                    name='quantity' 
+                                    data-id=item.productInfo.id
+                                    class='quantity-product-input')
+                            td #{item.price}$
+                            td 
+                                a.btn.btn-danger(href=`/cart/delete/${item.productInfo.id}`) Delete
+                .purchaseBox.text-end 
+                    .totalPrice.my-2 Total Price: #{cart.totalPrice}$
+                    button.btn.btn-success Purchase
+    script(src="/client/script/cart.js") 

@@ -1,0 +1,11 @@
+mixin alert-success(timeDelay)
+    - if (messages.success)
+        .message.success.alert.alert-success(show-alert time-delay=timeDelay)
+            span= messages.success
+            i(class="bi bi-x-circle-fill")
+
+mixin alert-error(timeDelay)
+    - if (messages.error)
+        .message.error.alert.alert-danger(show-alert time-delay=timeDelay)
+            span= messages.error
+            i(class="bi bi-x-circle-fill")

@@ -1,5 +1,8 @@
+include ./alert
 mixin productDetail(product)
-    .detail-product
+    +alert-success(3000)
+    form(action=`/cart/add/${product.id}` method='POST')
+        .detail-product
             .img-product
                 img(
                     src=product.thumbnail 
@@ -10,10 +13,19 @@ mixin productDetail(product)
                 .product-title #{product.title}
                 .product-price $#{product.price}
                 .product-description !{product.description}
+                .product-quantity 
+                    label(for='quantity') Quantity:
+                    input#quantity.form-control(
+                        type='number'
+                        name='quantity'
+                        min='1'
+                        value=1
+                        )
                 .product-button 
-                    button(class="btn btn-dark") 
+                    button.buy-now-btn(class="btn btn-dark") 
                         i.bi.bi-bag
                         | Buy Now
-                    button(class="btn btn-secondary")
+                    button.cart-btn(class="btn btn-secondary")
                         i.bi.bi-cart-plus
                         | Add to cart 
+    script(src="/client/script/detail.js") 
