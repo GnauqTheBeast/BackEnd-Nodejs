@@ -22,28 +22,25 @@ block main
                         th(scope='col') Price
                         th(scope='col') Quantity
                         th(scope='col') Total
-                        th(scope='col') 
                     tbody
                         each item, index in cart.products
                             tr
                             th(scope='row' name='item.productInfo.id') #{index + 1}
                             td
                                 img.thumbnail(src=item.productInfo.thumbnail, alt=item.productInfo.title)
-                            td 
-                                a(href=`/product/detail/${item.productInfo.slug}`) #{item.productInfo.title}
+                            td #{item.productInfo.title}
                             td #{item.productInfo.price}$
-                            td 
-                                input(
-                                    type="number" 
-                                    min='1' 
-                                    value=item.quantity 
-                                    name='quantity' 
-                                    data-id=item.productInfo.id
-                                    class='quantity-product-input')
+                            td #{item.quantity}
                             td #{item.price}$
-                            td 
-                                a.btn.btn-danger(href=`/cart/delete/${item.productInfo.id}`) Delete
-                .purchaseBox.text-end 
-                    .totalPrice.my-2 Total Price: #{cart.totalPrice}$
-                    a.btn.btn-success(href=`/checkout`) Purchase
-    script(src="/client/script/cart.js") 
+                form(action="/checkout/order", method="post").border.border-success.rounded
+                    .m-3
+                        .mb-3
+                            label.form-label(for='fullNameInput') Full Name
+                            input#fullNameInput.form-control(type='text' name='fullName' required)
+                        .mb-3
+                            label.form-label(for='phoneNumberInput') Phone Number
+                            input#phoneNumberInput.form-control(type='text' name='phoneNumber' required)
+                        .mb-3
+                            label.form-label(for='addressInput') Address
+                            input#addressInput.form-control(type='text' name='address' required)
+                        button.btn.btn-success(type='submit') Submit    

@@ -1,0 +1,11 @@
+extends ../../layouts/default
+include ../../mixins/alert
+
+block main
+    .main-content
+        +alert-success(3000)
+        div
+            h4.my-2 Purchase Successfully
+            a.btn.btn-success(href="/")
+                i(class="bi bi-cart4")
+                |Back to Home
