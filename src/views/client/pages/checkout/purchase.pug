@@ -2,10 +2,42 @@ extends ../../layouts/default
 include ../../mixins/alert
 
 block main
+    +alert-success(3000)
     .main-content
-        +alert-success(3000)
         div
-            h4.my-2 Purchase Successfully
-            a.btn.btn-success(href="/")
-                i(class="bi bi-cart4")
-                |Back to Home
+            h4.my-3 Purchase Successfully
+            .alert.alert-success Thank you for supporting my online store!
+                |  Order will be soon handled. 
+            h5.my-2 Customer Information 
+            table.table.table-bordered
+                tbody
+                    td Full Name 
+                    th #{order.userInfo.fullName}
+                    tr
+                    td Phone Number 
+                    th #{order.userInfo.phoneNumber}
+                    tr
+                    td  Address
+                    th #{order.userInfo.address}
+            h5.my-2 Order Information 
+            table.table.table-bordered
+                thead
+                        tr
+                        th(scope='col') #
+                        th(scope='col') Thumbnail
+                        th(scope='col') Product
+                        th(scope='col') Price
+                        th(scope='col') Quantity
+                        th(scope='col') Total
+                each item, index in productInfo
+                    tbody
+                        tr
+                            th(scope='row') #{index + 1}
+                            td
+                                img.thumbnail(src=item.thumbnail, alt=item.title)
+                            td #{item.title}
+                            td #{item.price}$
+                            td #{item.quantity}
+                            td #{item.totalPrice}$
+            .text-end 
+                .totalPrice.h5.my-2 Total Price: #{order.bill}$

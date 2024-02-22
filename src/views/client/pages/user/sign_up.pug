@@ -1,0 +1,33 @@
+extends ../../layouts/default
+include ../../mixins/alert
+
+block main
+    +alert-error(3000)
+    .container-md
+        .row.justify-content-around
+            form.col-md-8.form-admin(action=`/user/sign_up` method='POST')
+                .header.text-center.my-3 
+                    .h3 Register
+                .form-group
+                    label.my-2(for='fullName') Full Name 
+                    .input-group.input-group-prepend
+                        span#inputGroupPrepend.input-group-text
+                            i.bi.bi-person-vcard
+                        input.form-control(type='text', name='fullName', aria-describedby='inputGroupPrepend', required='') 
+                .form-group
+                    label.my-2(for='email') Email 
+                    .input-group.input-group-prepend
+                        span#inputGroupPrepend.input-group-text
+                            i.bi.bi-envelope-fill
+                        input.form-control(type='text', name='email', aria-describedby='inputGroupPrepend', required='')
+                .form-group
+                    label.my-2(for='password') Password
+                    .input-group.input-group-prepend
+                        span#inputGroupPrepend.input-group-text
+                            i.bi.bi-lock-fill 
+                        input.form-control(type='password', name='password', aria-describedby='inputGroupPrepend', required='')
+                    .form-text 
+                        ul 
+                            li Password must contain at least 8 characters
+                            li Password must contain at least 1 number
+                input.btn.btn-primary.btn-block.w-100(type='submit', value='Submit')

@@ -15,18 +15,6 @@ header
             a.nav-link(aria-current='page', href='/product') Product
             - const path = 'product'
             +sub-menu(categoryTree, path)
-          li.nav-item.dropdown
-            a.nav-link.dropdown-toggle(href='#', role='button', data-bs-toggle='dropdown', aria-expanded='false')
-              dropdown Dropdown
-            ul.dropdown-menu
-              li
-                a.dropdown-item(href='#') Action
-              li
-                a.dropdown-item(href='#') Another action
-              li
-                hr.dropdown-divider
-              li
-                a.dropdown-item(href='#') Something else here
           form#form-search.d-flex(role='search' action='/search')
             input.search-bar.form-control.me-2(
               type='search'
@@ -36,7 +24,30 @@ header
               value=(searchInfo ? searchInfo.keyword : '')
               )
             button.submit-btn.btn.btn-outline-success(type='submit') Search
-        a.btn.btn-success.btn-sm.ml-auto(href='/cart') 
+        .nav-item.dropdown.btn.btn-primary.btn-sm.mx-2
+          if(user) 
+            a.nav-link.dropdown-toggle(href='#', role='button', data-bs-toggle='dropdown', aria-expanded='false')
+              dropdown #{user.fullName}
+            ul.dropdown-menu
+              li
+                a.dropdown-item(href='/user/detail') Detail
+              li 
+                hr.dropdown-divider
+              li
+                a.dropdown-item(href='/user/logout') Log out
+          else
+            a.nav-link.dropdown-toggle(href='#', role='button', data-bs-toggle='dropdown', aria-expanded='false')
+              dropdown Account
+            ul.dropdown-menu
+              li
+                a.dropdown-item(href='/user/sign_in') Sign In
+              li 
+                hr.dropdown-divider
+              li
+                a.dropdown-item(href='/user/sign_up') Sign Up
+        a.btn.btn-success.btn-sm.ml-auto.position-relative(type='button' href='/cart')
           i(class="bi bi-cart4")
-          | Cart (#{totalProductCart})
+          | Cart 
+          span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+            | #{totalProductCart}
         

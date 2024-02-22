@@ -47,8 +47,29 @@ const CheckoutController = {
             products: []
         });
         req.flash('success', 'Purchase Successfully');
-        res.render('client/pages/checkout/purchase');
+        res.redirect(`/checkout/success/${order.id}`);
+    },
+    // [GET] /checkout/success/:orderId
+    success: async (req, res) => {
+        const orderId = req.params.orderId;
+        const order = await Order.findOne({ _id: orderId });
+        const productInfo = [];
+        let bill = 0;
+        for (const item of order.products) {
+            const product = await Product.findOne({ _id: item.product_id }).select('title thumbnail');
+            item.title = product.title;
+            item.thumbnail = product.thumbnail;
+            item.totalPrice = item.price * item.quantity;
+            bill += item.totalPrice;
+            productInfo.push(item);
+        }
+        order.bill = bill;
+        res.render('client/pages/checkout/purchase', {
+            order,
+            productInfo,
+        });
     }
+
 };
 
 module.exports = CheckoutController;

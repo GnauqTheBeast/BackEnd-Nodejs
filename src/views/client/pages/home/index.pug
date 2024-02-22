@@ -1,7 +1,9 @@
 extends ../../layouts/default
 include ../../mixins/product-grid 
+include ../../mixins/alert
 
 block main 
+    + alert-success(3000)
     .container-md
       +productGrid('Featured Product', featuredProduct)
       +productGrid('Latest Product', latestProduct)

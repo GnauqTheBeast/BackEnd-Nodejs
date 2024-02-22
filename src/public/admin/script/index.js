@@ -69,7 +69,7 @@ if(exitBtnAlert) {
     exitBtnAlert.addEventListener('click', () => {
         Alert.remove();
     });
-    const timeDelay = Alert.getAttribute('time-delay');
+    const timeDelay = +Alert.getAttribute('time-delay');
     setTimeout(() => {
         if(Alert) Alert.remove();
     }, timeDelay + 500)

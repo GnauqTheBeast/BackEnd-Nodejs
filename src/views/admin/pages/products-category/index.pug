@@ -37,8 +37,8 @@ block main
                             li 
                                 .dropdown-item(btn-status=`${buttonFilter.btn_status}`) #{buttonFilter.name}
             .app-content-table 
-                + alert-success(3000)
-                + alert-error(3000)
+                +alert-success(3000)
+                +alert-error(3000)
                 form(method="POST" name="selected-product-category-form" action="product-category/handle-form-action?_method=PATCH")
                     .my-3.d-flex.gap-2
                         .form-check
