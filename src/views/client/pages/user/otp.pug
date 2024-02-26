@@ -3,23 +3,22 @@ include ../../mixins/alert
 
 block main
     +alert-error(3000)
+    +alert-success(3000)
     .container-md
         .row.justify-content-around
-            form.col-md-8.form-admin(action=`/user/sign_in` method='POST')
+            form.col-md-8.form-admin(action=`/user/password/otp` method='POST')
                 .header.text-center.my-3 
-                    .h3 Log In 
+                    .h3 OTP
                 .form-group
                     label.my-2(for='email') Email 
                     .input-group.input-group-prepend
                         span#inputGroupPrepend.input-group-text
                             i.bi.bi-envelope-fill
-                        input.form-control(type='text', name='email', aria-describedby='inputGroupPrepend', required='')
+                        input.form-control(type='text', name='email' value=userEmail readonly)
                 .form-group
-                    label.my-2(for='password') Password
+                    label.my-2(for='otp') OTP
                     .input-group.input-group-prepend
                         span#inputGroupPrepend.input-group-text
                             i.bi.bi-lock-fill 
-                        input.form-control(type='password', name='password', aria-describedby='inputGroupPrepend', required='')
+                        input.form-control(type='text', name='otp', aria-describedby='inputGroupPrepend')
                 input.btn.btn-primary.my-3.btn-block.w-100(type='submit', value='Submit')
-                .form-text.text-end 
-                    a(href="/user/forgot/password") Forgot password ?

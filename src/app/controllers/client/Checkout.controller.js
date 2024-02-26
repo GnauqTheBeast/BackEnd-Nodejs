@@ -1,6 +1,7 @@
 const Cart = require('../../model/cart.model');
 const Product = require('../../model/products.model');
 const Order = require('../../model/order.model');
+const User = require('../../model/users.model');
 
 const CheckoutController = {
     // [GET] /checkout
@@ -36,6 +37,10 @@ const CheckoutController = {
             productList.push(objProduct);
         }
         const order = new Order();
+        if(req.cookies.tokenUser) {
+            const user = await User.findOne({ tokenUser: req.cookies.tokenUser }).select('id');
+            order.user_id = user.id;
+        }
         order.userInfo = userInfo;
         order.products = productList;
         order.cart_id = req.cookies.cartId;

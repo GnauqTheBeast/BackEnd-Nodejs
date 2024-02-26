@@ -11,8 +11,8 @@ const UserMiddleware = require('../../middlewares/client/user.middleware');
 
 function route(app) {
   app.use(CategoryMiddleware.category);
-  app.use(CartMiddleware.cart);
   app.use(UserMiddleware);
+  app.use(CartMiddleware.cart);
   app.use("/checkout", checkoutRoute);
   app.use("/cart", cartRoute);
   app.use("/search", searchRoute);

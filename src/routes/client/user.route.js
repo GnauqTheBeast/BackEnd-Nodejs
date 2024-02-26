@@ -3,7 +3,12 @@ const router = express.Router();
 const UserController = require("../../app/controllers/client/User.controller");
 const Validate = require('../../validates/client/user.validate');
 
-// router.get("/password/forgot", UserController.forgotPass);
+router.post("/password/change", Validate.password, UserController.changePasswordPost);
+router.get("/password/change", UserController.changePassword);
+router.post("/password/otp", UserController.otpPost);
+router.get("/password/otp", UserController.otp);
+router.post("/forgot/password", Validate.email, UserController.forgotPassPost);
+router.get("/forgot/password", UserController.forgotPass);
 router.get("/logout", UserController.logout);
 router.post("/sign_in", 
     Validate.email,

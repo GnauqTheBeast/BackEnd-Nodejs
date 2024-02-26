@@ -9,6 +9,11 @@ const Cart = new Schema({
             quantity: Number,
         }
     ],
+    expireAt: {
+        type: Date,
+        default: Date.now(),
+        expires: 60 * 60 * 24
+    }
 }, {    
     timestamps: true
 });

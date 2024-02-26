@@ -6,6 +6,7 @@ const User = new Schema({
     fullName: String,
     email: String,
     password: String, 
+    cart_id: String,
     tokenUser: {
         type: String,
         default: randomTokenHelper(20)

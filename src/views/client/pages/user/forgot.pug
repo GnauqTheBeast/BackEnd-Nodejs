@@ -1,0 +1,17 @@
+extends ../../layouts/default
+include ../../mixins/alert
+
+block main
+    +alert-error(3000)
+    .container-md
+        .row.justify-content-around
+            form.col-md-8.form-admin(action=`/user/forgot/password` method='POST')
+                .header.text-center.my-3 
+                    .h3 Forgot Password
+                .form-group
+                    label.my-2(for='email') Email 
+                    .input-group.input-group-prepend
+                        span#inputGroupPrepend.input-group-text
+                            i.bi.bi-envelope-fill
+                        input.form-control(type='text', name='email', aria-describedby='inputGroupPrepend', required='')
+                input.btn.btn-primary.my-3.btn-block.w-100(type='submit', value='Submit')
